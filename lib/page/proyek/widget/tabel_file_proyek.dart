@@ -1,10 +1,11 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/models/data.dart';
-import 'package:drawer/page/karyawan/widget/topjudul.dart';
+import 'package:drawer/page/proyek/widget/topjudulproyek.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
-class karyawanfile extends StatelessWidget {
-  const karyawanfile({
+class proyekfile extends StatelessWidget {
+  const proyekfile({
     Key? key,
   }) : super(key: key);
 
@@ -19,12 +20,12 @@ class karyawanfile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          topjudulkaryawan(),
+          topjudulproyek(),
           SizedBox(
             width: double.infinity,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              // controller: ScrollController(),
+              controller: ScrollController(),
               child: DataTable(
                 columnSpacing: defaultPadding,
                 columns: [
@@ -32,30 +33,30 @@ class karyawanfile extends StatelessWidget {
                     label: Text("# Id"),
                   ),
                   DataColumn(
-                    label: Text("Name"),
+                    label: Text("Project Name"),
                   ),
                   DataColumn(
-                    label: Text("Position"),
+                    label: Text("Klien"),
                   ),
                   DataColumn(
-                    label: Text("Birth"),
+                    label: Text("Manager"),
                   ),
                   DataColumn(
-                    label: Text("No. Telp"),
+                    label: Text("Start"),
                   ),
                   DataColumn(
-                    label: Text("Email"),
+                    label: Text("Deadline"),
                   ),
                   DataColumn(
-                    label: Text("Gender"),
+                    label: Text("Finished"),
                   ),
                   DataColumn(
-                    label: Text("Address"),
+                    label: Text("Status"),
                   ),
                 ],
                 rows: List.generate(
-                  demokaryawanfile.length,
-                  (index) => karyawanFileDataRow(demokaryawanfile[index]),
+                  demoproyekfile.length,
+                  (index) => proyekFileDataRow(demoproyekfile[index]),
                 ),
               ),
             ),
@@ -66,7 +67,7 @@ class karyawanfile extends StatelessWidget {
   }
 }
 
-DataRow karyawanFileDataRow(karyawanfiledata fileInfo) {
+DataRow proyekFileDataRow(proyekfiledata fileInfo) {
   return DataRow(
     cells: [
       DataCell(Container(
@@ -78,37 +79,29 @@ DataRow karyawanFileDataRow(karyawanfiledata fileInfo) {
         child: Text(fileInfo.title!),
       )),
       DataCell(Container(
-        width: 100,
-        child: Text(fileInfo.position!),
-      )),
-      DataCell(Container(
-        width: 100,
-        child: Text(fileInfo.birth!),
-      )),
-      DataCell(Container(
-        width: 130,
-        child: Text(fileInfo.telp!),
-      )),
-      DataCell(Container(
-        width: 130,
-        child: Text(fileInfo.email!),
-      )),
-      DataCell(Container(
-        width: 100,
-        child: Text(fileInfo.gender!),
+        width: 200,
+        child: Text(fileInfo.klien!),
       )),
       DataCell(Container(
         width: 200,
-        child: Text(fileInfo.address!),
+        child: Text(fileInfo.manager!),
       )),
-      // DataCell(Text(fileInfo.id!)),
-      // DataCell(Text(fileInfo.title!)),
-      // DataCell(Text(fileInfo.position!)),
-      // DataCell(Text(fileInfo.birth!)),
-      // DataCell(Text(fileInfo.telp!)),
-      // DataCell(Text(fileInfo.email!)),
-      // DataCell(Text(fileInfo.gender!)),
-      // DataCell(Text(fileInfo.address!)),
+      DataCell(Container(
+        width: 100,
+        child: Text(fileInfo.start!),
+      )),
+      DataCell(Container(
+        width: 100,
+        child: Text(fileInfo.deadline!),
+      )),
+      DataCell(Container(
+        width: 100,
+        child: Text(fileInfo.finish!),
+      )),
+      DataCell(Container(
+        width: 100,
+        child: Text(fileInfo.status!),
+      )),
     ],
   );
 }

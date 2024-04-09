@@ -1,16 +1,18 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
-import 'package:drawer/page/dashboard/widget/barchartcard.dart';
-import 'package:drawer/page/dashboard/widget/cardInfo.dart';
 import 'package:drawer/page/dashboard/widget/team.dart';
+import 'package:drawer/page/karyawan/widget/file_karyawan.dart';
+import 'package:drawer/page/karyawan/widget/formkaryawan.dart';
 import 'package:drawer/page/sidebar/header.dart';
-import 'package:drawer/page/dashboard/widget/recent_project.dart';
 import 'package:drawer/page/sidebar/side_menu.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class dashboard extends StatelessWidget {
-  const dashboard({super.key});
+class addKaryawan extends StatelessWidget {
+  const addKaryawan({super.key});
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideMenu(),
@@ -29,26 +31,28 @@ class dashboard extends StatelessWidget {
                     flex: 5,
                     child: Column(
                       children: [
-                        // MyFiles(),
-                        cardView(),
                         SizedBox(height: defaultPadding),
-                        barchartcard(),
-                        SizedBox(height: defaultPadding),
-                        RecentProject(),
+                        customform(title: "nama"),
+                        customform(title: "Id"),
+                        customform(title: "Jabatan"),
+                        customform(title: "Email"),
+                        customform(title: "Password Akun"),
+                        customform(title: "Jenis Kelamin"),
+                        customform(title: "Tanggal Lahir"),
+                        customform(title: "No. Telp"),
+                        customform(title: "Alamat"),
                         if (Responsive.isMobile(context))
                           SizedBox(height: defaultPadding),
-                        // if (Responsive.isMobile(context)) StorageDetails(),
-                        if (Responsive.isMobile(context)) team(),
+                        if (Responsive.isMobile(context)) fileKaryawan(),
                       ],
                     ),
                   ),
                   if (!Responsive.isMobile(context))
                     SizedBox(width: defaultPadding),
-                  // On Mobile means if the screen is less than 850 we don't want to show it
                   if (!Responsive.isMobile(context))
                     Expanded(
                       flex: 2,
-                      child: team(),
+                      child: fileKaryawan(),
                     ),
                 ],
               )

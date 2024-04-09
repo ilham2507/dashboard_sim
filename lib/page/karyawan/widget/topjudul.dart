@@ -1,6 +1,8 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/controller/MenuAppController.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class topjudulkaryawan extends StatelessWidget {
   const topjudulkaryawan({
@@ -27,7 +29,11 @@ class topjudulkaryawan extends StatelessWidget {
                       defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                context
+                    .read<MenuAppController>()
+                    .setSelectedItem('add karyawan');
+              },
               icon: Icon(Icons.add),
               label: Text("Add New"),
             ),

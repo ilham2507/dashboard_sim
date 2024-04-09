@@ -1,6 +1,6 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
-import 'package:drawer/page/proyek/widget/project_files.dart';
+import 'package:drawer/page/proyek/widget/tabel_file_proyek.dart';
 import 'package:drawer/page/sidebar/header.dart';
 import 'package:flutter/material.dart';
 

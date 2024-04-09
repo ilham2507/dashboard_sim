@@ -1,26 +1,32 @@
 import 'package:drawer/constants/responsive.dart';
 import 'package:drawer/controller/MenuAppController.dart';
 import 'package:drawer/page/dashboard/dashboard.dart';
+import 'package:drawer/page/karyawan/addKaryawan.dart';
 import 'package:drawer/page/karyawan/karyawan.dart';
+import 'package:drawer/page/proyek/addProyek.dart';
 import 'package:drawer/page/proyek/proyek.dart';
 import 'package:drawer/page/sidebar/side_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final selectedItem = context.watch<MenuAppController>().selectedItem;
 
-    // Memberikan nilai awal null pada selectedPage
     Widget? selectedPage;
 
     if (selectedItem == 'dashboard') {
-      selectedPage = dashboard();
+      selectedPage = const dashboard();
     } else if (selectedItem == 'proyek') {
-      selectedPage = proyek();
+      selectedPage = const proyek();
     } else if (selectedItem == 'karyawan') {
-      selectedPage = karyawan();
+      selectedPage = const karyawan();
+    } else if (selectedItem == 'add karyawan') {
+      selectedPage = const addKaryawan();
+    } else if (selectedItem == 'add proyek') {
+      selectedPage = const addProyek();
     }
 
     return Scaffold(

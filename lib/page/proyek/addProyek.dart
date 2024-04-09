@@ -1,16 +1,19 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
-import 'package:drawer/page/dashboard/widget/barchartcard.dart';
-import 'package:drawer/page/dashboard/widget/cardInfo.dart';
-import 'package:drawer/page/dashboard/widget/team.dart';
+import 'package:drawer/page/karyawan/widget/file_karyawan.dart';
+import 'package:drawer/page/karyawan/widget/formkaryawan.dart';
+import 'package:drawer/page/proyek/widget/file_proyek.dart';
+import 'package:drawer/page/proyek/widget/formproyek.dart';
 import 'package:drawer/page/sidebar/header.dart';
-import 'package:drawer/page/dashboard/widget/recent_project.dart';
 import 'package:drawer/page/sidebar/side_menu.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class dashboard extends StatelessWidget {
-  const dashboard({super.key});
+class addProyek extends StatelessWidget {
+  const addProyek({super.key});
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideMenu(),
@@ -29,26 +32,29 @@ class dashboard extends StatelessWidget {
                     flex: 5,
                     child: Column(
                       children: [
-                        // MyFiles(),
-                        cardView(),
                         SizedBox(height: defaultPadding),
-                        barchartcard(),
-                        SizedBox(height: defaultPadding),
-                        RecentProject(),
+                        customformProyek(title: "Id"),
+                        customformProyek(title: "Nama Proyek"),
+                        customformProyek(title: "Klien"),
+                        customformProyek(title: "Manager"),
+                        customformProyek(title: "Team"),
+                        customformProyek(title: "Start"),
+                        customformProyek(title: "Deadline"),
+                        customformProyek(title: "Selesai"),
+                        customformProyek(title: "Status"),
+                        customformProyek(title: "Deskripsi"),
                         if (Responsive.isMobile(context))
                           SizedBox(height: defaultPadding),
-                        // if (Responsive.isMobile(context)) StorageDetails(),
-                        if (Responsive.isMobile(context)) team(),
+                        if (Responsive.isMobile(context)) fileproyek(),
                       ],
                     ),
                   ),
                   if (!Responsive.isMobile(context))
                     SizedBox(width: defaultPadding),
-                  // On Mobile means if the screen is less than 850 we don't want to show it
                   if (!Responsive.isMobile(context))
                     Expanded(
                       flex: 2,
-                      child: team(),
+                      child: fileproyek(),
                     ),
                 ],
               )

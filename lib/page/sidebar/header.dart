@@ -22,6 +22,10 @@ class Header extends StatelessWidget {
       pageTitle = 'Karyawan';
     } else if (selectedItem == 'proyek') {
       pageTitle = 'Proyek';
+    } else if (selectedItem == 'add karyawan') {
+      pageTitle = 'Add Karyawan';
+    } else if (selectedItem == 'add proyek') {
+      pageTitle = 'Add Proyek';
     }
 
     return Row(
