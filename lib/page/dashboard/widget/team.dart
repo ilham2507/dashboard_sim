@@ -26,6 +26,8 @@ class team extends StatelessWidget {
             ),
           ),
           SizedBox(height: defaultPadding),
+
+          // data dari user + role manager
           teamInfo(
             title: "Jonathan",
             svgSrc: "assets/icons/media.svg",

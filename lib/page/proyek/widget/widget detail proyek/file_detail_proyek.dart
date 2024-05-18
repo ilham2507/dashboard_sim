@@ -1,10 +1,10 @@
 import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/page/proyek/widget/widget%20detail%20proyek/filecarddetail.dart';
 import 'package:flutter/material.dart';
 import 'package:drawer/constants/constants.dart';
-import 'package:drawer/page/karyawan/widget/filecard.dart';
 
-class fileKaryawan extends StatelessWidget {
-  const fileKaryawan({Key? key}) : super(key: key);
+class filedetailproyek extends StatelessWidget {
+  const filedetailproyek({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +25,11 @@ class fileKaryawan extends StatelessWidget {
             ),
           ),
           SizedBox(height: defaultPadding),
-          fileCard(
+          fileCardDetailProyek(
             svgSrc: "assets/icons/media.svg",
             jabatan: "manager",
           ),
-          fileCard(
+          fileCardDetailProyek(
             svgSrc: "assets/icons/media.svg",
             jabatan: "manager",
           ),

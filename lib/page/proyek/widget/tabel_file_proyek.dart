@@ -1,8 +1,9 @@
 import 'package:drawer/constants/constants.dart';
+import 'package:drawer/controller/MenuAppController.dart';
 import 'package:drawer/models/data.dart';
 import 'package:drawer/page/proyek/widget/topjudulproyek.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class proyekfile extends StatelessWidget {
   const proyekfile({
@@ -56,7 +57,7 @@ class proyekfile extends StatelessWidget {
                 ],
                 rows: List.generate(
                   demoproyekfile.length,
-                  (index) => proyekFileDataRow(demoproyekfile[index]),
+                  (index) => proyekFileDataRow(context, demoproyekfile[index]),
                 ),
               ),
             ),
@@ -67,41 +68,97 @@ class proyekfile extends StatelessWidget {
   }
 }
 
-DataRow proyekFileDataRow(proyekfiledata fileInfo) {
+DataRow proyekFileDataRow(BuildContext context, proyekfiledata fileInfo) {
   return DataRow(
     cells: [
-      DataCell(Container(
-        width: 50,
-        child: Text(fileInfo.id!),
-      )),
-      DataCell(Container(
-        width: 200,
-        child: Text(fileInfo.title!),
-      )),
-      DataCell(Container(
-        width: 200,
-        child: Text(fileInfo.klien!),
-      )),
-      DataCell(Container(
-        width: 200,
-        child: Text(fileInfo.manager!),
-      )),
-      DataCell(Container(
-        width: 100,
-        child: Text(fileInfo.start!),
-      )),
-      DataCell(Container(
-        width: 100,
-        child: Text(fileInfo.deadline!),
-      )),
-      DataCell(Container(
-        width: 100,
-        child: Text(fileInfo.finish!),
-      )),
-      DataCell(Container(
-        width: 100,
-        child: Text(fileInfo.status!),
-      )),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 50,
+            child: Text(fileInfo.id!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 200,
+            child: Text(fileInfo.title!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 200,
+            child: Text(fileInfo.klien!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 200,
+            child: Text(fileInfo.manager!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 100,
+            child: Text(fileInfo.start!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 100,
+            child: Text(fileInfo.deadline!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 100,
+            child: Text(fileInfo.finish!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context.read<MenuAppController>().setSelectedItem('detail proyek');
+          },
+          child: Container(
+            width: 100,
+            child: Text(fileInfo.status!),
+          ),
+        ),
+      ),
     ],
   );
 }

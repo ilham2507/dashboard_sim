@@ -188,3 +188,51 @@ List demokaryawanfile = [
     address: "jln. kemundung Ds.Jajar Kec. kasih Kab. Pekalongan",
   ),
 ];
+
+class RecentTask {
+  final String? tugas, catatan, pekerja, start, deadline, status;
+
+  RecentTask({
+    this.tugas,
+    this.catatan,
+    this.pekerja,
+    this.start,
+    this.deadline,
+    this.status,
+  });
+}
+
+List demoRecentTask = [
+  RecentTask(
+    tugas: "front end mobile developer",
+    catatan: "gunakan teknologi terbaru agar memudahkan maintenance",
+    pekerja: "alexander",
+    start: "28 Oktober 2020",
+    deadline: "01-03-2021",
+    status: "90 %",
+  ),
+  RecentTask(
+    tugas: "front end mobile developer",
+    catatan: "gunakan teknologi terbaru agar memudahkan maintenance",
+    pekerja: "alexander",
+    start: "28 Oktober 2020",
+    deadline: "01-03-2021",
+    status: "90 %",
+  ),
+  RecentTask(
+    tugas: "front end mobile developer",
+    catatan: "gunakan teknologi terbaru agar memudahkan maintenance",
+    pekerja: "alexander",
+    start: "28 Oktober 2020",
+    deadline: "01-03-2021",
+    status: "90 %",
+  ),
+  RecentTask(
+    tugas: "front end mobile developer",
+    catatan: "gunakan teknologi terbaru agar memudahkan maintenance",
+    pekerja: "alexander",
+    start: "28 Oktober 2020",
+    deadline: "01-03-2021",
+    status: "90 %",
+  ),
+];

@@ -1,10 +1,10 @@
+import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/page/proyek/widget/widget%20add%20proyek/filecard.dart';
+import 'package:flutter/material.dart';
 import 'package:drawer/constants/constants.dart';
-import 'package:drawer/page/karyawan/widget/filecard.dart';
-import 'package:drawer/page/proyek/widget/filecard.dart';
-import 'package:flutter/cupertino.dart';
 
 class fileproyek extends StatelessWidget {
-  const fileproyek({super.key});
+  const fileproyek({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +32,24 @@ class fileproyek extends StatelessWidget {
           fileCardProyek(
             svgSrc: "assets/icons/media.svg",
             jabatan: "manager",
+          ),
+          SizedBox(height: defaultPadding),
+          Center(
+            child: Container(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: defaultPadding * 1.5,
+                    vertical:
+                        defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
+                  ),
+                ),
+                onPressed: () {},
+                icon: Icon(Icons.save),
+                label: Text("Simpan"),
+              ),
+            ),
           ),
         ],
       ),

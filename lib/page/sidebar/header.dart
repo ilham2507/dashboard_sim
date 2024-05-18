@@ -23,9 +23,13 @@ class Header extends StatelessWidget {
     } else if (selectedItem == 'proyek') {
       pageTitle = 'Proyek';
     } else if (selectedItem == 'add karyawan') {
-      pageTitle = 'Add Karyawan';
+      pageTitle = 'Tambah Karyawan';
     } else if (selectedItem == 'add proyek') {
-      pageTitle = 'Add Proyek';
+      pageTitle = 'Tambah Proyek';
+    } else if (selectedItem == 'Detail Karyawan') {
+      pageTitle = 'Detail Karyawan';
+    } else if (selectedItem == 'detail proyek') {
+      pageTitle = 'Detail Proyek';
     }
 
     return Row(

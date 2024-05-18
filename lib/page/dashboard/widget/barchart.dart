@@ -9,6 +9,8 @@ class barchart extends StatelessWidget {
     return BarChart(BarChartData(
         borderData: FlBorderData(border: Border.all(width: 0)),
         groupsSpace: 15,
+
+        // data dari proyek yang berjalan dirubah menjadi diagram
         titlesData: FlTitlesData(
             show: true,
             bottomTitles: SideTitles(

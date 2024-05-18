@@ -15,9 +15,11 @@ class cardView extends StatelessWidget {
           crossAxisCount: size.width < 650 ? 2 : 4,
           childAspectRatio: size.width < 650 ? 2 : 1.5,
         ),
-        tablet: AnalyticInfoCardGridView(),
+        tablet: AnalyticInfoCardGridView(
+          childAspectRatio: size.width < 1000 ? 2 : 4,
+        ),
         desktop: AnalyticInfoCardGridView(
-          childAspectRatio: size.width < 1400 ? 2 : 5,
+          childAspectRatio: size.width < 1400 ? 2 : 4,
         ),
       ),
     );
@@ -126,6 +128,7 @@ class cardInfo {
   });
 }
 
+// data masuk sini
 List analyticData = [
   cardInfo(
     title: "Pekerjaan",

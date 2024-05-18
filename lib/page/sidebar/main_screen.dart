@@ -2,8 +2,11 @@ import 'package:drawer/constants/responsive.dart';
 import 'package:drawer/controller/MenuAppController.dart';
 import 'package:drawer/page/dashboard/dashboard.dart';
 import 'package:drawer/page/karyawan/addKaryawan.dart';
+import 'package:drawer/page/karyawan/detailKaryawan.dart';
+import 'package:drawer/page/karyawan/detailKaryawan.dart';
 import 'package:drawer/page/karyawan/karyawan.dart';
 import 'package:drawer/page/proyek/addProyek.dart';
+import 'package:drawer/page/proyek/detailProyek.dart';
 import 'package:drawer/page/proyek/proyek.dart';
 import 'package:drawer/page/sidebar/side_menu.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +30,10 @@ class MainScreen extends StatelessWidget {
       selectedPage = const addKaryawan();
     } else if (selectedItem == 'add proyek') {
       selectedPage = const addProyek();
+    } else if (selectedItem == 'detail karyawan') {
+      selectedPage = const detailKaryawan();
+    } else if (selectedItem == 'detail proyek') {
+      selectedPage = const detailProyek();
     }
 
     return Scaffold(
