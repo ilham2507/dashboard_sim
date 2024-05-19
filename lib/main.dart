@@ -1,22 +1,26 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
 import 'package:drawer/data/services/auth/auth_bloc.dart';
 import 'package:drawer/page/login/login.dart';
 import 'package:drawer/page/proyek/proyek.dart';
 import 'package:drawer/page/sidebar/main_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  runApp(MyApp(prefs: _prefs));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final SharedPreferences prefs;
 
-  // This widget is the root of your application.
+  const MyApp({Key? key, required this.prefs}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -24,7 +28,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => MenuAppController(),
         ),
-        BlocProvider(create: (context) => AuthenticationBloc())
+        BlocProvider(create: (context) => AuthenticationBloc()),
+        // BlocProvider<UserBloc>(
+        //   create: (context) => UserBloc(userService: UserService()),
+        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -35,6 +42,9 @@ class MyApp extends StatelessWidget {
               .apply(bodyColor: Colors.white),
           canvasColor: secondaryColor,
         ),
+        // Set initialRoute berdasarkan apakah token sudah ada
+        initialRoute:
+            prefs.getString('token') != null ? '/dashboard' : '/login',
         onGenerateRoute: (settings) {
           switch (settings.name) {
             case '/login':
@@ -55,7 +65,6 @@ class MyApp extends StatelessWidget {
         //   ],
         //   child: login(),
         // ),
-        home: Login(),
       ),
     );
   }
