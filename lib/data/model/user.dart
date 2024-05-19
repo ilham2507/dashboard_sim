@@ -13,7 +13,7 @@ class User {
   final DateTime updatedAt;
   final int roleId;
   final String fotoProfile;
-  final String token;
+  final Role role;
 
   User({
     required this.id,
@@ -30,28 +30,81 @@ class User {
     required this.updatedAt,
     required this.roleId,
     required this.fotoProfile,
-    required this.token,
+    required this.role,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['data']['id'],
-      name: json['data']['name'],
-      nip: json['data']['nip'],
-      email: json['data']['email'],
-      emailVerifiedAt: json['data']['email_verified_at'] != null
-          ? DateTime.parse(json['data']['email_verified_at'])
+      id: json['id'],
+      name: json['name'],
+      nip: json['nip'],
+      email: json['email'],
+      emailVerifiedAt: json['email_verified_at'] != null
+          ? DateTime.parse(json['email_verified_at'])
           : null,
-      username: json['data']['username'],
-      jenisKelamin: json['data']['jenis_kelamin'],
-      tanggalLahir: DateTime.parse(json['data']['tanggal_lahir']),
-      noTelp: json['data']['no_telp'],
-      alamat: json['data']['alamat'],
-      createdAt: DateTime.parse(json['data']['created_at']),
-      updatedAt: DateTime.parse(json['data']['updated_at']),
-      roleId: json['data']['role_id'],
-      fotoProfile: json['data']['foto_profile'],
-      token: json['token'],
+      username: json['username'],
+      jenisKelamin: json['jenis_kelamin'],
+      tanggalLahir: DateTime.parse(json['tanggal_lahir']),
+      noTelp: json['no_telp'],
+      alamat: json['alamat'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      roleId: json['role_id'],
+      fotoProfile: json['foto_profile'],
+      role: Role.fromJson(json['role']),
     );
+  }
+}
+
+class UserList {
+  List<User>? _users;
+
+  UserList({List<User>? users}) {
+    if (users != null) {
+      this._users = users;
+    }
+  }
+
+  List<User>? get users => _users;
+  set users(List<User>? users) => _users = users;
+
+  UserList.fromJson(Map<String, dynamic> json) {
+    if (json['users'] != null) {
+      _users = <User>[];
+      json['users'].forEach((v) {
+        _users!.add(new User.fromJson(v));
+      });
+    }
+  }
+}
+
+class Role {
+  int id;
+  String name;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  Role(
+      {required this.id,
+      required this.name,
+      required this.createdAt,
+      required this.updatedAt});
+
+  factory Role.fromJson(Map<String, dynamic> json) {
+    return Role(
+      id: json['id'],
+      name: json['name'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
   }
 }
