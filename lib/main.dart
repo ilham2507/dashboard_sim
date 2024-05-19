@@ -1,9 +1,11 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/services/auth/auth_bloc.dart';
 import 'package:drawer/page/login/login.dart';
 import 'package:drawer/page/proyek/proyek.dart';
 import 'package:drawer/page/sidebar/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => MenuAppController(),
         ),
+        BlocProvider(create: (context) => AuthenticationBloc())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -35,12 +38,13 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) {
           switch (settings.name) {
             case '/login':
-              return MaterialPageRoute(builder: (context) => login());
+              return MaterialPageRoute(builder: (context) => Login());
             case '/dashboard':
               return MaterialPageRoute(builder: (context) => MainScreen());
             case '/proyek':
               return MaterialPageRoute(builder: (context) => proyek());
             default:
+              return null;
           }
         },
         // home: MultiProvider(
@@ -51,7 +55,7 @@ class MyApp extends StatelessWidget {
         //   ],
         //   child: login(),
         // ),
-        home: login(),
+        home: Login(),
       ),
     );
   }
