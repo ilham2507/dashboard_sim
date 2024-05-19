@@ -1,6 +1,7 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
 import 'package:drawer/models/data.dart';
+import 'package:drawer/page/proyek/add_task_proyek.dart';
 import 'package:flutter/material.dart';
 
 class tabelTaskProyek extends StatelessWidget {
@@ -35,29 +36,52 @@ class tabelTaskProyek extends StatelessWidget {
                         defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return add_task();
+                    },
+                  );
+                },
                 icon: Icon(Icons.add_task),
                 label: Text("Tambah Tugas"),
               ),
             ],
           ),
           SizedBox(height: defaultPadding),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: defaultPadding,
-              columns: [
-                DataColumn(label: Text("Tugas")),
-                DataColumn(label: Text("Catatan")),
-                DataColumn(label: Text("Pekerja")),
-                DataColumn(label: Text("Start")),
-                DataColumn(label: Text("Deadline")),
-                DataColumn(label: Text("Status")),
-              ],
-              // Rows
-              rows: List.generate(
-                demoRecentTask.length,
-                (index) => recentTaskDataRow(demoRecentTask[index]),
+          SizedBox(
+            width: double.infinity,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              controller: ScrollController(),
+              child: DataTable(
+                columnSpacing: defaultPadding,
+                columns: [
+                  DataColumn(
+                    label: Text("Tugas"),
+                  ),
+                  DataColumn(
+                    label: Text("Catatan"),
+                  ),
+                  DataColumn(
+                    label: Text("Pekerja"),
+                  ),
+                  DataColumn(
+                    label: Text("Start"),
+                  ),
+                  DataColumn(
+                    label: Text("Deadline"),
+                  ),
+                  DataColumn(
+                    label: Text("Status"),
+                  ),
+                ],
+                // Rows
+                rows: List.generate(
+                  demoRecentTask.length,
+                  (index) => recentTaskDataRow(context, demoRecentTask[index]),
+                ),
               ),
             ),
           ),
@@ -67,33 +91,105 @@ class tabelTaskProyek extends StatelessWidget {
   }
 }
 
-DataRow recentTaskDataRow(RecentTask fileInfo) {
+DataRow recentTaskDataRow(BuildContext context, RecentTask fileInfo) {
   return DataRow(
     cells: [
-      DataCell(Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Text(fileInfo.tugas!),
-      )),
-      DataCell(Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Text(fileInfo.catatan!),
-      )),
-      DataCell(Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Text(fileInfo.pekerja!),
-      )),
-      DataCell(Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Text(fileInfo.start!),
-      )),
-      DataCell(Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Text(fileInfo.deadline!),
-      )),
-      DataCell(Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Text(fileInfo.status!),
-      )),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return add_task();
+              },
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(fileInfo.tugas!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return add_task();
+              },
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(fileInfo.catatan!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return add_task();
+              },
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(fileInfo.pekerja!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return add_task();
+              },
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(fileInfo.start!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return add_task();
+              },
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(fileInfo.deadline!),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return add_task();
+              },
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(fileInfo.status!),
+          ),
+        ),
+      ),
     ],
   );
 }

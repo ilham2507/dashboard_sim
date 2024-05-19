@@ -1,7 +1,7 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
-import 'package:drawer/page/dashboard/widget/team.dart';
 import 'package:drawer/page/karyawan/widget/file_karyawan.dart';
+import 'package:drawer/page/karyawan/widget/filecard.dart';
 import 'package:drawer/page/karyawan/widget/formkaryawan.dart';
 import 'package:drawer/page/sidebar/header.dart';
 import 'package:drawer/page/sidebar/side_menu.dart';
@@ -52,7 +52,55 @@ class addKaryawan extends StatelessWidget {
                   if (!Responsive.isMobile(context))
                     Expanded(
                       flex: 2,
-                      child: fileKaryawan(),
+                      child: Container(
+                        padding: EdgeInsets.all(defaultPadding),
+                        decoration: BoxDecoration(
+                          color: secondaryColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Files",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: defaultPadding),
+                            fileCard(
+                              svgSrc: "assets/icons/media.svg",
+                              jabatan: "manager",
+                            ),
+                            fileCard(
+                              svgSrc: "assets/icons/media.svg",
+                              jabatan: "manager",
+                            ),
+                            SizedBox(height: defaultPadding),
+                            Center(
+                              child: Container(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: defaultPadding * 1.5,
+                                      vertical: defaultPadding /
+                                          (Responsive.isMobile(context)
+                                              ? 2
+                                              : 1),
+                                    ),
+                                  ),
+                                  onPressed: () {},
+                                  icon: Icon(Icons.save),
+                                  label: Text("Simpan"),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                 ],
               )
