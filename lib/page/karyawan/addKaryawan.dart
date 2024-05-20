@@ -14,7 +14,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class addKaryawan extends StatefulWidget {
@@ -27,9 +30,10 @@ class addKaryawan extends StatefulWidget {
 class _addKaryawanState extends State<addKaryawan> {
   final MultiSelectController _controller = MultiSelectController();
 
-  String? selectedRoleId;
+  String selectedRoleId = '';
   File? file;
   DateTime? selectedDate;
+  bool isLoading = false;
 
   final nama = TextEditingController();
   final username = TextEditingController();
@@ -50,10 +54,17 @@ class _addKaryawanState extends State<addKaryawan> {
     );
     if (pickedDate != null && pickedDate != selectedDate) {
       selectedDate = pickedDate;
+      String tglnew = DateFormat('yyyy-MM-dd').format(pickedDate);
+      setState(() {
+        tgl.text = tglnew;
+      });
     }
   }
 
   void storeUser() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       Map<String, dynamic> userData = {
         'role_id': selectedRoleId,
@@ -68,7 +79,7 @@ class _addKaryawanState extends State<addKaryawan> {
         'alamat': alamat.text,
       };
 
-      if (file != null) {
+      if (file != null || selectedRoleId != '') {
         String imagePath = file!.path;
         // Call UserService to store user
         final userService = UserService();
@@ -77,6 +88,7 @@ class _addKaryawanState extends State<addKaryawan> {
         // Show success message
         Fluttertoast.showToast(
             msg: "Store user successfully", toastLength: Toast.LENGTH_LONG);
+        Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         Fluttertoast.showToast(
             msg: "Please upload a profile photo",
@@ -85,6 +97,10 @@ class _addKaryawanState extends State<addKaryawan> {
     } catch (e) {
       Fluttertoast.showToast(
           msg: "Failed to save user: $e", toastLength: Toast.LENGTH_LONG);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -192,12 +208,50 @@ class _addKaryawanState extends State<addKaryawan> {
                         customform(controller: username, title: "Username"),
                         customform(controller: password, title: "Password"),
                         customform(controller: jk, title: "Jenis Kelamin"),
-                        customform(controller: tgl, title: "Tanggal Lahir"),
+                        customform(
+                            onTap: () {
+                              selectDate(context);
+                            },
+                            isReadOnly: true,
+                            controller: tgl,
+                            title: "Tanggal Lahir"),
                         customform(controller: notelp, title: "No. Telp"),
                         customform(controller: alamat, title: "Alamat"),
                         if (Responsive.isMobile(context))
                           SizedBox(height: defaultPadding),
-                        if (Responsive.isMobile(context)) fileKaryawan(),
+                        if (Responsive.isMobile(context))
+                          images(
+                            context,
+                            () {
+                              getImageGalery();
+                            },
+                          ),
+                        SizedBox(height: defaultPadding),
+                        Center(
+                          child: Container(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: defaultPadding * 1.5,
+                                  vertical: defaultPadding /
+                                      (Responsive.isMobile(context) ? 2 : 1),
+                                ),
+                              ),
+                              onPressed: () {
+                                storeUser();
+                              },
+                              icon: isLoading
+                                  ? CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Icon(Icons.save),
+                              label: isLoading
+                                  ? Text("Menyimpan...")
+                                  : Text("Simpan"),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -224,10 +278,11 @@ class _addKaryawanState extends State<addKaryawan> {
                               ),
                             ),
                             SizedBox(height: defaultPadding),
-                            fileCard(
-                              svgSrc: "assets/icons/media.svg",
-                              jabatan: "manager",
-                              file: file,
+                            images(
+                              context,
+                              () {
+                                getImageGalery();
+                              },
                             ),
                             SizedBox(height: defaultPadding),
                             Center(
@@ -256,11 +311,83 @@ class _addKaryawanState extends State<addKaryawan> {
                       ),
                     ),
                 ],
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
+  Future getImageGalery() async {
+    final picker = ImagePicker();
+    final imageFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (imageFile != null) {
+        file = File(imageFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+}
+
+Container images(BuildContext context, VoidCallback onPressed) {
+  return Container(
+    margin: EdgeInsets.only(top: defaultPadding),
+    padding: EdgeInsets.all(defaultPadding),
+    width: MediaQuery.of(context).size.width,
+    decoration: BoxDecoration(
+      border: Border.all(width: 2, color: primaryColor.withOpacity(0.15)),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(defaultPadding),
+      ),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 100,
+          width: 100,
+          child: SvgPicture.asset("assets/icons/media.svg"),
+        ),
+        SizedBox(
+            width: defaultPadding), // Spacer horizontal antara gambar dan teks
+        Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start, // Mengatur teks agar berada di kiri
+          children: [
+            Text(
+              "Foto Profil",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              "Belum ada file dipilih",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(color: Colors.white70),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton.icon(
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(
+                  horizontal: defaultPadding * 1.5,
+                  vertical:
+                      defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
+                ),
+              ),
+              onPressed: onPressed,
+              icon: Icon(Icons.upload),
+              label: Text("Upload Foto"),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

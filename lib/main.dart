@@ -1,3 +1,4 @@
+import 'package:drawer/page/karyawan/karyawan.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:drawer/constants/constants.dart';
@@ -17,9 +18,9 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final SharedPreferences prefs;
+  final SharedPreferences? prefs;
 
-  const MyApp({Key? key, required this.prefs}) : super(key: key);
+  const MyApp({Key? key, this.prefs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
         ),
         // Set initialRoute berdasarkan apakah token sudah ada
         initialRoute:
-            prefs.getString('token') != null ? '/dashboard' : '/login',
+            prefs!.getString('token') != null ? '/dashboard' : '/login',
         onGenerateRoute: (settings) {
           switch (settings.name) {
             case '/login':
@@ -53,6 +54,8 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(builder: (context) => MainScreen());
             case '/proyek':
               return MaterialPageRoute(builder: (context) => proyek());
+            case '/karyawan':
+              return MaterialPageRoute(builder: (context) => karyawan());
             default:
               return null;
           }

@@ -4,7 +4,9 @@ class customform extends StatelessWidget {
   final String title;
   final bool obscuretext;
   final TextEditingController? controller;
+  final bool isReadOnly;
   final bool isShowtitle;
+  final VoidCallback? onTap;
   final TextInputType? keyboardType;
 
   const customform(
@@ -12,7 +14,9 @@ class customform extends StatelessWidget {
       required this.title,
       this.obscuretext = false,
       this.controller,
+      this.isReadOnly = false,
       this.isShowtitle = true,
+      this.onTap,
       this.keyboardType})
       : super(key: key);
 
@@ -34,9 +38,11 @@ class customform extends StatelessWidget {
             height: 8,
           ),
         TextFormField(
+          onTap: onTap,
           keyboardType: keyboardType,
           obscureText: obscuretext,
           controller: controller,
+          readOnly: isReadOnly,
           decoration: InputDecoration(
             hintText: !isShowtitle ? title : null,
             border: OutlineInputBorder(
