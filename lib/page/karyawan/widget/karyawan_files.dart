@@ -1,8 +1,8 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
 import 'package:drawer/data/model/user.dart';
-import 'package:drawer/data/services/bloc/user_services.dart';
-import 'package:drawer/data/services/bloc/users_bloc.dart';
+import 'package:drawer/data/services/users/user_services.dart';
+import 'package:drawer/data/services/users/users_bloc.dart';
 import 'package:drawer/models/data.dart';
 import 'package:drawer/page/karyawan/widget/topjudul.dart';
 import 'package:flutter/material.dart';

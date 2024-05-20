@@ -25,14 +25,14 @@ class fileKaryawan extends StatelessWidget {
             ),
           ),
           SizedBox(height: defaultPadding),
-          fileCard(
-            svgSrc: "assets/icons/media.svg",
-            jabatan: "manager",
-          ),
-          fileCard(
-            svgSrc: "assets/icons/media.svg",
-            jabatan: "manager",
-          ),
+          // fileCard(
+          //   svgSrc: "assets/icons/media.svg",
+          //   jabatan: "manager",
+          // ),
+          // fileCard(
+          //   svgSrc: "assets/icons/media.svg",
+          //   jabatan: "manager",
+          // ),
           SizedBox(height: defaultPadding),
           Center(
             child: Container(

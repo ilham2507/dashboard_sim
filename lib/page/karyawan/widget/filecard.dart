@@ -1,17 +1,43 @@
+import 'dart:io';
+
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
-class fileCard extends StatelessWidget {
-  const fileCard({
-    Key? key,
+class fileCard extends StatefulWidget {
+  fileCard({
+    super.key,
     required this.svgSrc,
     required this.jabatan,
-  }) : super(key: key);
+    required this.file,
+  });
 
   final String svgSrc, jabatan;
+  File? file;
+
+  @override
+  State<fileCard> createState() => _fileCardState();
+}
+
+class _fileCardState extends State<fileCard> {
+  // File? _image;
+  String? _imageName;
+
+  Future getImageGalery() async {
+    final picker = ImagePicker();
+    final imageFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (imageFile != null) {
+        widget.file = File(imageFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +58,7 @@ class fileCard extends StatelessWidget {
           SizedBox(
             height: 100,
             width: 100,
-            child: SvgPicture.asset(svgSrc),
+            child: SvgPicture.asset(widget.svgSrc),
           ),
           SizedBox(
               width:
@@ -46,13 +72,23 @@ class fileCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              Text(
-                jabatan,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: Colors.white70),
-              ),
+              widget.file != null
+                  ? Expanded(
+                      child: Text(
+                        widget.jabatan,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.white70),
+                      ),
+                    )
+                  : Text(
+                      "Belum ada file dipilih",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.white70),
+                    ),
               SizedBox(
                 height: 20,
               ),
@@ -64,9 +100,8 @@ class fileCard extends StatelessWidget {
                         defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
                   ),
                 ),
-                onPressed: () {
-                  // context.read<MenuAppController>().setSelectedItem('add karyawan');
-                },
+                onPressed: getImageGalery,
+                // context.read<MenuAppController>().setSelectedItem('add karyawan');
                 icon: Icon(Icons.upload),
                 label: Text("Upload Foto"),
               ),

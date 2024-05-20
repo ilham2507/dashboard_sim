@@ -1,12 +1,11 @@
 import 'package:drawer/data/model/user.dart';
 import 'package:drawer/data/services/api/api_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
-class UserService {
-  Future<List<User>> getUsers() async {
+class RoleServices {
+  Future<List<Role>> getRoles() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     print(token);
@@ -16,7 +15,7 @@ class UserService {
 
     try {
       final response = await http.get(
-        Uri.parse('${ApiServices.baseUrl}/users'),
+        Uri.parse('${ApiServices.baseUrl}/roles'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -25,9 +24,9 @@ class UserService {
       final data = jsonDecode(response.body);
       print(data);
       if (response.statusCode == 200) {
-        final List<dynamic> responseData = jsonDecode(response.body)['users'];
+        final List<dynamic> responseData = jsonDecode(response.body)['roles'];
         print(responseData);
-        return responseData.map((json) => User.fromJson(json)).toList();
+        return responseData.map((json) => Role.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load users: ${response.statusCode}');
       }
