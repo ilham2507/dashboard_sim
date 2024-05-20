@@ -12,6 +12,12 @@ class UsersLoaded extends UsersState {
   UsersLoaded(this.users);
 }
 
+class UserByIdLoaded extends UsersState {
+  final User user;
+  final bool loadedById;
+  UserByIdLoaded(this.user, {this.loadedById = true});
+}
+
 class UsersError extends UsersState {
   final String error;
   UsersError(this.error);

@@ -11,3 +11,9 @@ class StoreUser extends UsersEvent {
 
   StoreUser({required this.userData, required this.imagePath});
 }
+
+class GetUserById extends UsersEvent {
+  final String userId;
+
+  GetUserById({required this.userId});
+}

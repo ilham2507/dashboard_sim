@@ -31,5 +31,15 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         emit(UsersError(e.toString()));
       }
     });
+
+    on<GetUserById>((event, emit) async {
+      emit(UsersLoading());
+      try {
+        final user = await userService.getUserById(event.userId);
+        emit(UserByIdLoaded(user));
+      } catch (e) {
+        emit(UsersError(e.toString()));
+      }
+    });
   }
 }

@@ -1,20 +1,27 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/services/api/api_services.dart';
+import 'package:drawer/data/services/users/user_services.dart';
+import 'package:drawer/data/services/users/users_bloc.dart';
+import 'package:drawer/page/profil/profil.dart';
 
 import 'package:drawer/page/sidebar/header.dart';
 import 'package:drawer/page/sidebar/side_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class detailKaryawan extends StatelessWidget {
-  const detailKaryawan({super.key});
+  String? idUser;
+  detailKaryawan({this.idUser, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
-
+    final Widget profileWidget = detailProfile(idUser ?? "");
     return Scaffold(
       drawer: SideMenu(),
       body: SafeArea(
@@ -41,22 +48,29 @@ class detailKaryawan extends StatelessWidget {
                     isSmallScreen
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(width: 400, child: imageProfile()),
-                              detailProfile(),
+                              SizedBox(
+                                  width: 400,
+                                  child: imageProfile(
+                                    id: idUser ?? "",
+                                  )),
+                              profileWidget
                             ],
                           )
                         : Container(
                             padding: EdgeInsets.all(20),
-                            // constraints: BoxConstraints(maxWidth: 600),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                imageProfile(),
+                              children: [
+                                imageProfile(
+                                  id: idUser ?? "",
+                                ),
                                 SizedBox(
                                   width: 20,
                                 ),
-                                Center(child: detailProfile()),
+                                Center(child: profileWidget),
                               ],
                             ),
                           ),
@@ -72,201 +86,128 @@ class detailKaryawan extends StatelessWidget {
 }
 
 class imageProfile extends StatelessWidget {
-  const imageProfile({super.key});
+  String id;
+  imageProfile({required this.id, super.key});
 
   @override
   Widget build(BuildContext context) {
     final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
 
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(180),
-              ),
-              color: bgColor),
-          child: Image.asset(
-            "assets/photos/logo2.png",
-            width: isSmallScreen ? 100 : 200,
-            height: isSmallScreen ? 100 : 200,
-            fit: BoxFit.fill,
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        ElevatedButton.icon(
-          icon: const Icon(Icons.edit),
-          label: const Text("Edit"),
-          onPressed: () {
-            context.read<MenuAppController>().setSelectedItem('add karyawan');
+    return BlocProvider(
+        create: (context) =>
+            UsersBloc(userService: UserService())..add(GetUserById(userId: id)),
+        child: BlocBuilder<UsersBloc, UsersState>(
+          builder: (context, state) {
+            if (state is UsersLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is UserByIdLoaded) {
+              final user = state.user;
+              return Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(180),
+                      color: bgColor,
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        "${ApiServices.imageUrl}${user.fotoProfile}",
+                        width: isSmallScreen ? 100 : 200,
+                        height: isSmallScreen ? 100 : 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.edit),
+                    label: const Text("Edit"),
+                    onPressed: () {
+                      context
+                          .read<MenuAppController>()
+                          .setSelectedItem('add karyawan');
+                    },
+                  ),
+                ],
+              );
+            } else if (state is UsersError) {
+              return Center(
+                child: Text('Failed to load user: ${state.error}'),
+              );
+            } else {
+              return const Center(
+                child: Text('Unknown state'),
+              );
+            }
           },
-        ),
-      ],
-    );
+        ));
   }
 }
 
-class detailProfile extends StatelessWidget {
-  const detailProfile({super.key});
+Container profileData(String title, String subtitle) {
+  return Container(
+    padding: const EdgeInsets.all(5),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(subtitle),
+      ],
+    ),
+  );
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 700),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Nama",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("Alexander Smith Oto Dinata"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "NIP",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("1223454636345"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Jabatan",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("Karyawan"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Email",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("AlexanderSmith@gmail.com"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Username",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("Alexander2230"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Jenis Kelamin",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("Laki-Laki"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Tanggal Lahir",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("20-05-1990"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "No. Telepone",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text("09892749852"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Alamat",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                    "Ds. Cisadea Kec. Bogor Kab. Bogor Provinsi Jawa Barat ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+Widget detailProfile(String id) {
+  return BlocProvider(
+      create: (context) =>
+          UsersBloc(userService: UserService())..add(GetUserById(userId: id)),
+      child: BlocBuilder<UsersBloc, UsersState>(
+        builder: (context, state) {
+          if (state is UsersLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is UserByIdLoaded) {
+            final user = state.user;
+            return Container(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  profileData("Nama", user.name),
+                  profileData("Nip", user.nip),
+                  profileData("Email", user.email),
+                  profileData("Username", user.username),
+                  profileData("Jenis Kelamin", user.jenisKelamin),
+                  profileData("Tanggal Lahir",
+                      DateFormat('dddd MMMM yyyy').format(user.tanggalLahir)),
+                  profileData("No. Telepon", user.noTelp),
+                  profileData("Alamat", user.alamat),
+                  profileData("Role", user.role.name),
+                ],
+              ),
+            );
+          } else if (state is UsersError) {
+            return Center(
+              child: Text('Failed to load user: ${state.error}'),
+            );
+          } else {
+            return const Center(
+              child: Text('Unknown state'),
+            );
+          }
+        },
+      ));
 }

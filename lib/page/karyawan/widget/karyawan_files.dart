@@ -4,6 +4,7 @@ import 'package:drawer/data/model/user.dart';
 import 'package:drawer/data/services/users/user_services.dart';
 import 'package:drawer/data/services/users/users_bloc.dart';
 import 'package:drawer/models/data.dart';
+import 'package:drawer/page/karyawan/detailKaryawan.dart';
 import 'package:drawer/page/karyawan/widget/topjudul.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -197,6 +198,14 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
 
 DataRow karyawanFileData(BuildContext context, User user, int id) {
   return DataRow(
+    onLongPress: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => detailKaryawan(idUser: user.id.toString()),
+        ),
+      );
+    },
     cells: [
       DataCell(Text(id.toString())),
       DataCell(Text(user.name)),

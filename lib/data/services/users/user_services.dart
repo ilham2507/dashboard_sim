@@ -63,4 +63,32 @@ class UserService {
           'Failed to store user: ${data['message'] ?? response.statusCode}');
     }
   }
+
+  Future<User> getUserById(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) {
+      throw Exception('Token not found in SharedPreferences');
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiServices.baseUrl}/users/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body)['user'];
+        print(responseData);
+        return User.fromJson(responseData);
+      } else {
+        throw Exception('Failed to load user: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load user: $e');
+    }
+  }
 }
