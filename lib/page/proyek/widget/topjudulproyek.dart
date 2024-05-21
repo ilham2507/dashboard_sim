@@ -30,7 +30,9 @@ class topjudulproyek extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                context.read<MenuAppController>().setSelectedItem('add proyek');
+                context
+                    .read<MenuAppController>()
+                    .setSelectedItem('add proyek', id: "", isUpdate: false);
               },
               icon: Icon(Icons.add),
               label: Text("Add New"),

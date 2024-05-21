@@ -1,11 +1,14 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/data/services/proyek/proyek_bloc.dart';
+import 'package:drawer/data/services/proyek/proyek_service.dart';
 import 'package:drawer/page/proyek/widget/widget%20detail%20proyek/filecarddetail.dart';
 import 'package:drawer/page/proyek/widget/widget%20detail%20proyek/tabel_task_proyek.dart';
 import 'package:drawer/page/sidebar/header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class detailProyek extends StatelessWidget {
   String? id;
@@ -29,112 +32,146 @@ class detailProyek extends StatelessWidget {
                     flex: 5,
                     child: Column(
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(defaultPadding),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: secondaryColor,
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              )),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "website sistem informasi monitoring",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "With supporting text below as a natural lead-in to additional contenposuere erat a ante. Voluptates, illo, iste itaque voluptas corrupti ratione reprehenderit magni similique? Tempore, quos delectus asperiores libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem ipsum dolor sit amet.Voluptates, illo, iste itaque voluptas corrupti ratione reprehenderit magni similique? Tempore, quos delectus asperiores libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem ipsum dolor sit amet. With supporting text below as a natural lead-in to additional contenposuere erat a ante.",
-                                textAlign: TextAlign.justify,
-                              ),
-                              Wrap(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        right: defaultPadding,
-                                        top: defaultPadding,
-                                        bottom: defaultPadding),
+                        BlocProvider(
+                            create: (context) =>
+                                ProyekBloc(proyekServices: ProyekServices())
+                                  ..add(GetProyekById(userId: id ?? "")),
+                            child: BlocBuilder<ProyekBloc, ProyekState>(
+                              builder: (context, state) {
+                                if (state is ProyekLoading) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (state is ProyekByIdLoaded) {
+                                  final proyek = state.proyek;
+                                  return Container(
+                                    padding: EdgeInsets.all(defaultPadding),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: secondaryColor,
+                                        borderRadius: BorderRadius.circular(
+                                          20,
+                                        )),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Start :",
+                                          proyek.nama ?? "",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Text("28 Oktober 2023"),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        right: defaultPadding,
-                                        top: defaultPadding,
-                                        bottom: defaultPadding),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
+                                        SizedBox(
+                                          height: 20,
+                                        ),
                                         Text(
-                                          "Finish :",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          proyek.detail ?? "",
+                                          textAlign: TextAlign.justify,
                                         ),
-                                        Text("28 Oktober 2024"),
+                                        Wrap(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  right: defaultPadding,
+                                                  top: defaultPadding,
+                                                  bottom: defaultPadding),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Start :",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(proyek.start.toString()),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  right: defaultPadding,
+                                                  top: defaultPadding,
+                                                  bottom: defaultPadding),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Finish :",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                      proyek.finish.toString()),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  right: defaultPadding,
+                                                  top: defaultPadding,
+                                                  bottom: defaultPadding),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Klien :",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(proyek.klien ?? ""),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Wrap(
+                                          children: [
+                                            Text(
+                                              "Team : ",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: proyek.taskProyek !=
+                                                      null
+                                                  ? proyek.taskProyek!
+                                                      .map((task) {
+                                                      return Text(
+                                                          task.user?.name ??
+                                                              "Unknown");
+                                                    }).toList()
+                                                  : [Text("No team members")],
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        right: defaultPadding,
-                                        top: defaultPadding,
-                                        bottom: defaultPadding),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Klien :",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text("PT gema solusi"),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Wrap(
-                                children: [
-                                  Text(
-                                    "Team : ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text("1.Alexa"),
-                                      Text("2.Romy"),
-                                      Text("1.Alexa"),
-                                      Text("2.Romy"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                                  );
+                                } else if (state is ProyekError) {
+                                  return Center(
+                                    child: Text(
+                                        'Failed to load user: ${state.error}'),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: Text('Unknown state'),
+                                  );
+                                }
+                              },
+                            )),
                         SizedBox(
                           height: 20,
                         ),

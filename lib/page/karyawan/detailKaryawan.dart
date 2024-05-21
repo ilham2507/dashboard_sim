@@ -198,7 +198,7 @@ Widget detailProfile(String id) {
                       DateFormat('dddd MMMM yyyy').format(user.tanggalLahir)),
                   profileData("No. Telepon", user.noTelp),
                   profileData("Alamat", user.alamat),
-                  profileData("Role", user.role.name),
+                  profileData("Role", user.role!.name),
                 ],
               ),
             );

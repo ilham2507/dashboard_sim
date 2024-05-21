@@ -34,8 +34,13 @@ class MainScreen extends StatelessWidget {
         id: selectedItemId,
         isUpdate: selectedItemUpdate,
       );
-    } else if (selectedItem == 'add proyek') {
-      selectedPage = const addProyek();
+    } else if (selectedItem == 'add proyek' &&
+        selectedItemId != null &&
+        selectedItemUpdate != null) {
+      selectedPage = addProyek(
+        id: selectedItemId,
+        isUpdate: selectedItemUpdate,
+      );
     } else if (selectedItem == 'detail karyawan' && selectedItemId != null) {
       selectedPage = detailKaryawan(idUser: selectedItemId);
     } else if (selectedItem == 'detail proyek' && selectedItemId != null) {

@@ -19,5 +19,40 @@ class ProyekBloc extends Bloc<ProyekEvent, ProyekState> {
         emit(ProyekError(e.toString()));
       }
     });
+
+    on<GetProyekById>((event, emit) async {
+      emit(ProyekLoading());
+      try {
+        final user = await proyekServices.getProyekById(event.userId);
+        emit(ProyekByIdLoaded(user));
+      } catch (e) {
+        emit(ProyekError(e.toString()));
+      }
+    });
+
+    on<StoreProyek>((event, emit) async {
+      emit(ProyekStoring());
+      try {
+        final Map<String, String> proyekData = event.proyekData
+            .map((key, value) => MapEntry(key, value.toString()));
+        await proyekServices.storeProyek(proyekData);
+        emit(ProyekStored());
+      } catch (e) {
+        emit(ProyekError(e.toString()));
+      }
+    });
+
+    on<UpdateProyekById>((event, emit) async {
+      emit(ProyekLoading());
+      try {
+        final Map<String, String> proyekData = event.proyekData
+            .map((key, value) => MapEntry(key, value.toString()));
+        await proyekServices.updateProyekById(event.userId, proyekData);
+        final updatedUser = await proyekServices.getProyekById(event.userId);
+        emit(ProyekUpdated(updatedUser));
+      } catch (e) {
+        emit(ProyekError(e.toString()));
+      }
+    });
   }
 }

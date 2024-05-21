@@ -13,7 +13,7 @@ class User {
   final DateTime updatedAt;
   final int roleId;
   final String? fotoProfile;
-  final Role role;
+  final Role? role;
 
   User({
     required this.id,
@@ -51,30 +51,30 @@ class User {
       updatedAt: DateTime.parse(json['updated_at']),
       roleId: json['role_id'],
       fotoProfile: json['foto_profile'],
-      role: Role.fromJson(json['role']),
+      role: json['role'] != null ? Role.fromJson(json['role']) : null,
     );
   }
-}
 
-class UserList {
-  List<User>? _users;
-
-  UserList({List<User>? users}) {
-    if (users != null) {
-      this._users = users;
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['nip'] = nip;
+    data['email'] = email;
+    data['email_verified_at'] = emailVerifiedAt?.toIso8601String();
+    data['username'] = username;
+    data['jenis_kelamin'] = jenisKelamin;
+    data['tanggal_lahir'] = tanggalLahir.toIso8601String();
+    data['no_telp'] = noTelp;
+    data['alamat'] = alamat;
+    data['created_at'] = createdAt.toIso8601String();
+    data['updated_at'] = updatedAt.toIso8601String();
+    data['role_id'] = roleId;
+    data['foto_profile'] = fotoProfile;
+    if (role != null) {
+      data['role'] = role!.toJson();
     }
-  }
-
-  List<User>? get users => _users;
-  set users(List<User>? users) => _users = users;
-
-  UserList.fromJson(Map<String, dynamic> json) {
-    if (json['users'] != null) {
-      _users = <User>[];
-      json['users'].forEach((v) {
-        _users!.add(new User.fromJson(v));
-      });
-    }
+    return data;
   }
 }
 
@@ -84,11 +84,12 @@ class Role {
   DateTime createdAt;
   DateTime updatedAt;
 
-  Role(
-      {required this.id,
-      required this.name,
-      required this.createdAt,
-      required this.updatedAt});
+  Role({
+    required this.id,
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
   factory Role.fromJson(Map<String, dynamic> json) {
     return Role(
@@ -100,11 +101,11 @@ class Role {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['created_at'] = createdAt.toIso8601String();
+    data['updated_at'] = updatedAt.toIso8601String();
     return data;
   }
 }

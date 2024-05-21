@@ -16,3 +16,19 @@ class ProyekError extends ProyekState {
   final String error;
   ProyekError(this.error);
 }
+
+class ProyekByIdLoaded extends ProyekState {
+  final Proyek proyek;
+  final bool loadedById;
+  ProyekByIdLoaded(this.proyek, {this.loadedById = true});
+}
+
+class ProyekStoring extends ProyekState {}
+
+class ProyekStored extends ProyekState {}
+
+class ProyekUpdated extends ProyekState {
+  final Proyek proyek;
+
+  ProyekUpdated(this.proyek);
+}

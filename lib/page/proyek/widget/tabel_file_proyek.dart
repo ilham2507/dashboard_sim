@@ -88,6 +88,10 @@ class proyekfile extends StatelessWidget {
 
 DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
   return DataRow(
+    onLongPress: () {
+      context.read<MenuAppController>().setSelectedItem('add proyek',
+          id: proyek.id.toString(), isUpdate: true);
+    },
     cells: [
       DataCell(
         GestureDetector(

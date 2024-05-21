@@ -120,7 +120,7 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
           },
           child: Container(
             width: 100,
-            child: Text(user.role.name),
+            child: Text(user.role!.name),
           ),
         ),
       ),
@@ -206,7 +206,7 @@ DataRow karyawanFileData(BuildContext context, User user, int id) {
     cells: [
       DataCell(Text(id.toString())),
       DataCell(Text(user.name)),
-      DataCell(Text(user.role.name)),
+      DataCell(Text(user.role!.name)),
       DataCell(Text(DateFormat('dd MMMM yyyy').format(user.tanggalLahir))),
       DataCell(Text(user.noTelp)),
       DataCell(Text(user.email)),
