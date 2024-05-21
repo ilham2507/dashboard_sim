@@ -89,7 +89,7 @@ class _addProyekState extends State<addProyek> {
         'start': start.text,
         'finish': finish.text,
         'klien': klien.text,
-        'user_ids': selectedUserId,
+        // 'user_ids': selectedUserId,
       };
 
       final proyekService = ProyekServices();
@@ -182,88 +182,88 @@ class _addProyekState extends State<addProyek> {
                               title: "Manager",
                               controller: manager,
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Team",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  BlocProvider(
-                                    create: (context) =>
-                                        UsersBloc(userService: UserService())
-                                          ..add(LoadUser()),
-                                    child: BlocBuilder<UsersBloc, UsersState>(
-                                      builder: (context, state) {
-                                        if (state is UsersLoading) {
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        } else if (state is UsersLoaded) {
-                                          final List<ValueItem<dynamic>>
-                                              dropdownOptions = state.users
-                                                  .map((user) => ValueItem(
-                                                      label: user.name,
-                                                      value: user.id))
-                                                  .toList();
-                                          return MultiSelectDropDown(
-                                            borderColor: Colors.white,
-                                            fieldBackgroundColor: bgColor,
-                                            dropdownBackgroundColor:
-                                                secondaryColor,
-                                            optionsBackgroundColor:
-                                                secondaryColor,
-                                            controller: _controller,
-                                            onOptionSelected: (options) {
-                                              setState(() {
-                                                selectedUserId = options
-                                                    .map((option) =>
-                                                        option.value)
-                                                    .toList();
-                                              });
-                                              debugPrint(
-                                                  selectedUserId.toString());
-                                              debugPrint(options.toString());
-                                            },
-                                            options: dropdownOptions,
-                                            disabledOptions: const [
-                                              ValueItem(
-                                                  label: 'Option 1', value: '1')
-                                            ],
-                                            selectionType: SelectionType.multi,
-                                            chipConfig: const ChipConfig(
-                                                wrapType: WrapType.wrap),
-                                            optionTextStyle:
-                                                const TextStyle(fontSize: 16),
-                                            selectedOptionIcon:
-                                                const Icon(Icons.check_circle),
-                                          );
-                                        } else if (state is UsersError) {
-                                          return Center(
-                                              child: Text(
-                                                  'Error: ${state.error}'));
-                                        }
-                                        return SizedBox();
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Container(
+                            //   decoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(14),
+                            //   ),
+                            //   child: Column(
+                            //     mainAxisAlignment: MainAxisAlignment.start,
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Text(
+                            //         "Team",
+                            //         style: TextStyle(
+                            //           color: Colors.white,
+                            //           fontWeight: FontWeight.bold,
+                            //         ),
+                            //       ),
+                            //       const SizedBox(
+                            //         height: 8,
+                            //       ),
+                            //       BlocProvider(
+                            //         create: (context) =>
+                            //             UsersBloc(userService: UserService())
+                            //               ..add(LoadUser()),
+                            //         child: BlocBuilder<UsersBloc, UsersState>(
+                            //           builder: (context, state) {
+                            //             if (state is UsersLoading) {
+                            //               return const Center(
+                            //                 child: CircularProgressIndicator(),
+                            //               );
+                            //             } else if (state is UsersLoaded) {
+                            //               final List<ValueItem<dynamic>>
+                            //                   dropdownOptions = state.users
+                            //                       .map((user) => ValueItem(
+                            //                           label: user.name,
+                            //                           value: user.id))
+                            //                       .toList();
+                            //               return MultiSelectDropDown(
+                            //                 borderColor: Colors.white,
+                            //                 fieldBackgroundColor: bgColor,
+                            //                 dropdownBackgroundColor:
+                            //                     secondaryColor,
+                            //                 optionsBackgroundColor:
+                            //                     secondaryColor,
+                            //                 controller: _controller,
+                            //                 onOptionSelected: (options) {
+                            //                   setState(() {
+                            //                     selectedUserId = options
+                            //                         .map((option) =>
+                            //                             option.value)
+                            //                         .toList();
+                            //                   });
+                            //                   debugPrint(
+                            //                       selectedUserId.toString());
+                            //                   debugPrint(options.toString());
+                            //                 },
+                            //                 options: dropdownOptions,
+                            //                 disabledOptions: const [
+                            //                   ValueItem(
+                            //                       label: 'Option 1', value: '1')
+                            //                 ],
+                            //                 selectionType: SelectionType.multi,
+                            //                 chipConfig: const ChipConfig(
+                            //                     wrapType: WrapType.wrap),
+                            //                 optionTextStyle:
+                            //                     const TextStyle(fontSize: 16),
+                            //                 selectedOptionIcon:
+                            //                     const Icon(Icons.check_circle),
+                            //               );
+                            //             } else if (state is UsersError) {
+                            //               return Center(
+                            //                   child: Text(
+                            //                       'Error: ${state.error}'));
+                            //             }
+                            //             return SizedBox();
+                            //           },
+                            //         ),
+                            //       ),
+                            //       const SizedBox(
+                            //         height: 8,
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                             customform(
                               title: "Start",
                               onTap: () {

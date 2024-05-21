@@ -1,4 +1,4 @@
-import 'package:drawer/data/model/user.dart';
+import 'package:drawer/data/model/role.dart';
 import 'package:drawer/data/services/api/api_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;

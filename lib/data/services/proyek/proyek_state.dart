@@ -32,3 +32,5 @@ class ProyekUpdated extends ProyekState {
 
   ProyekUpdated(this.proyek);
 }
+
+class ProyekDeleted extends ProyekState {}

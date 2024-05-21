@@ -127,4 +127,36 @@ class ProyekServices {
       throw Exception('Failed to update proyek: $e');
     }
   }
+
+  Future<void> deleteProyekById(String proyekId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) {
+      throw Exception('Token not found in SharedPreferences');
+    }
+
+    try {
+      final url = Uri.parse('${ApiServices.baseUrl}/proyeks/$proyekId');
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      };
+
+      final response = await http.post(
+        url,
+        headers: headers,
+      );
+
+      if (response.statusCode != 200) {
+        final data = jsonDecode(response.body);
+        print(
+            'Failed to delete proyek: ${data['message'] ?? response.statusCode}');
+        throw Exception(
+            'Failed to delete proyek: ${data['message'] ?? response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to delete proyek: $e');
+      throw Exception('Failed to delete proyek: $e');
+    }
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
 import 'package:drawer/data/model/proyek.dart';
@@ -7,6 +8,8 @@ import 'package:drawer/models/data.dart';
 import 'package:drawer/page/proyek/widget/topjudulproyek.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class proyekfile extends StatelessWidget {
@@ -66,6 +69,12 @@ class proyekfile extends StatelessWidget {
                             DataColumn(
                               label: Text("Finished"),
                             ),
+                            DataColumn(
+                              label: Text("Nilai"),
+                            ),
+                            DataColumn(
+                              label: Text("Aksi"),
+                            ),
                           ],
                           rows: List.generate(
                             proyeks.length,
@@ -83,6 +92,19 @@ class proyekfile extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+void deleteData(String id, BuildContext context) async {
+  try {
+    final proyekService = ProyekServices();
+    await proyekService.deleteProyekById(id);
+    Fluttertoast.showToast(
+        msg: "Delete proyek successfully", toastLength: Toast.LENGTH_LONG);
+    context.read<MenuAppController>().setSelectedItem('dashboard');
+  } catch (e) {
+    Fluttertoast.showToast(
+        msg: "Failed to delete proyek: $e", toastLength: Toast.LENGTH_LONG);
   }
 }
 
@@ -154,7 +176,8 @@ DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
           },
           child: Container(
             width: 100,
-            child: Text(proyek.start!),
+            child: Text(DateFormat('EEEE, MMMM d, y')
+                .format(DateTime.parse(proyek.start!))),
           ),
         ),
       ),
@@ -167,8 +190,43 @@ DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
           },
           child: Container(
             width: 100,
-            child: Text(proyek.finish!),
+            child: Text(DateFormat('EEEE, MMMM d, y')
+                .format(DateTime.parse(proyek.finish!))),
           ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context
+                .read<MenuAppController>()
+                .setSelectedItem('detail proyek', id: proyek.id.toString());
+          },
+          child: Container(
+            width: 100,
+            child: Text(proyek.nilai.toString()),
+          ),
+        ),
+      ),
+      DataCell(
+        SizedBox(
+          width: 100,
+          child: IconButton(
+              color: Colors.red,
+              onPressed: () {
+                AwesomeDialog(
+                        width: 500,
+                        context: context,
+                        animType: AnimType.scale,
+                        title: "Warning",
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {
+                          deleteData(proyek.id.toString(), context);
+                        },
+                        desc: "Are you sure to delete the data?")
+                    .show();
+              },
+              icon: Icon(Icons.remove_circle_outline_sharp)),
         ),
       ),
     ],

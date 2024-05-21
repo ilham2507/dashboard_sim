@@ -26,3 +26,9 @@ class UpdateProyekById extends ProyekEvent {
     required this.proyekData,
   });
 }
+
+class DeleteProyekById extends ProyekEvent {
+  final String proyekId;
+
+  DeleteProyekById({required this.proyekId});
+}

@@ -54,5 +54,15 @@ class ProyekBloc extends Bloc<ProyekEvent, ProyekState> {
         emit(ProyekError(e.toString()));
       }
     });
+
+    on<DeleteProyekById>((event, emit) async {
+      emit(ProyekLoading());
+      try {
+        await proyekServices.deleteProyekById(event.proyekId);
+        emit(ProyekDeleted());
+      } catch (e) {
+        emit(ProyekError(e.toString()));
+      }
+    });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:drawer/data/model/role.dart';
 import 'package:drawer/data/model/user.dart';
 import 'package:drawer/data/services/roles/role_services.dart';
 import 'package:flutter/material.dart';
