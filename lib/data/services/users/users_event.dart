@@ -7,9 +7,8 @@ class LoadUser extends UsersEvent {}
 
 class StoreUser extends UsersEvent {
   final Map<String, dynamic> userData;
-  final String imagePath;
 
-  StoreUser({required this.userData, required this.imagePath});
+  StoreUser({required this.userData});
 }
 
 class GetUserById extends UsersEvent {

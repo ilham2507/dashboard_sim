@@ -18,6 +18,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedItem = context.watch<MenuAppController>().selectedItem;
     final selectedItemId = context.watch<MenuAppController>().selectedItemId;
+    final selectedItemUpdate = context.watch<MenuAppController>().isUpdateItem;
     Widget? selectedPage;
 
     if (selectedItem == 'dashboard') {
@@ -26,8 +27,13 @@ class MainScreen extends StatelessWidget {
       selectedPage = const proyek();
     } else if (selectedItem == 'karyawan') {
       selectedPage = const karyawan();
-    } else if (selectedItem == 'add karyawan') {
-      selectedPage = const addKaryawan();
+    } else if (selectedItem == 'add karyawan' &&
+        selectedItemId != null &&
+        selectedItemUpdate != null) {
+      selectedPage = addKaryawan(
+        id: selectedItemId,
+        isUpdate: selectedItemUpdate,
+      );
     } else if (selectedItem == 'add proyek') {
       selectedPage = const addProyek();
     } else if (selectedItem == 'detail karyawan' && selectedItemId != null) {

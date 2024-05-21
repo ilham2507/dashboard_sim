@@ -12,7 +12,7 @@ class User {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int roleId;
-  final String fotoProfile;
+  final String? fotoProfile;
   final Role role;
 
   User({

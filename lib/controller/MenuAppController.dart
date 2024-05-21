@@ -5,6 +5,7 @@ class MenuAppController extends ChangeNotifier {
 
   String selectedItem = 'dashboard';
   String? selectedItemId;
+  bool? isUpdateItem;
 
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
 
@@ -14,9 +15,10 @@ class MenuAppController extends ChangeNotifier {
     }
   }
 
-  void setSelectedItem(String item, {String? id}) {
+  void setSelectedItem(String item, {String? id, bool? isUpdate}) {
     selectedItem = item;
     selectedItemId = id;
+    isUpdateItem = isUpdate;
     notifyListeners();
   }
 }

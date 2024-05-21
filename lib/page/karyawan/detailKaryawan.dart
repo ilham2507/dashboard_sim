@@ -115,8 +115,8 @@ class imageProfile extends StatelessWidget {
                       color: bgColor,
                     ),
                     child: ClipOval(
-                      child: Image.network(
-                        "${ApiServices.imageUrl}${user.fotoProfile}",
+                      child: Image.asset(
+                        "assets/photos/user.png",
                         width: isSmallScreen ? 100 : 200,
                         height: isSmallScreen ? 100 : 200,
                         fit: BoxFit.cover,
@@ -130,9 +130,10 @@ class imageProfile extends StatelessWidget {
                     icon: const Icon(Icons.edit),
                     label: const Text("Edit"),
                     onPressed: () {
-                      context
-                          .read<MenuAppController>()
-                          .setSelectedItem('add karyawan');
+                      context.read<MenuAppController>().setSelectedItem(
+                          'add karyawan',
+                          id: user.id.toString(),
+                          isUpdate: true);
                     },
                   ),
                 ],

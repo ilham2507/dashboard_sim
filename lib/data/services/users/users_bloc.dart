@@ -25,7 +25,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       try {
         final Map<String, String> userData =
             event.userData.map((key, value) => MapEntry(key, value.toString()));
-        await userService.storeUser(userData, event.imagePath);
+        await userService.storeUser(userData);
         emit(UserStored());
       } catch (e) {
         emit(UsersError(e.toString()));
@@ -47,8 +47,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       try {
         final Map<String, String> userData =
             event.userData.map((key, value) => MapEntry(key, value.toString()));
-        await userService.updateUserById(event.userId, userData,
-            imagePath: event.imagePath);
+        await userService.updateUserById(event.userId, userData);
         final updatedUser = await userService.getUserById(event.userId);
         emit(UserUpdated(updatedUser));
       } catch (e) {

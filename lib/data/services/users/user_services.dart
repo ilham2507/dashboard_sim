@@ -36,31 +36,30 @@ class UserService {
     }
   }
 
-  Future<void> storeUser(
-      Map<String, dynamic> userData, String imagePath) async {
+  Future<void> storeUser(Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     if (token == null) {
       throw Exception('Token not found in SharedPreferences');
     }
 
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('${ApiServices.baseUrl}/users'));
-    request.headers['Authorization'] = 'Bearer $token';
-    request.fields
-        .addAll(userData.map((key, value) => MapEntry(key, value.toString())));
+    try {
+      final response = await http.post(
+        Uri.parse('${ApiServices.baseUrl}/users'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(userData),
+      );
 
-    if (imagePath.isNotEmpty) {
-      request.files
-          .add(await http.MultipartFile.fromPath('foto_profile', imagePath));
-    }
-
-    var response = await request.send();
-    if (response.statusCode != 201) {
-      final responseData = await response.stream.bytesToString();
-      final data = jsonDecode(responseData);
-      throw Exception(
-          'Failed to store user: ${data['message'] ?? response.statusCode}');
+      if (response.statusCode != 201) {
+        final data = jsonDecode(response.body);
+        throw Exception(
+            'Failed to store user: ${data['message'] ?? response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to store user: $e');
     }
   }
 
@@ -92,31 +91,45 @@ class UserService {
     }
   }
 
-  Future<void> updateUserById(String userId, Map<String, dynamic> userData,
-      {String? imagePath}) async {
+  Future<void> updateUserById(
+      String userId, Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     if (token == null) {
       throw Exception('Token not found in SharedPreferences');
     }
 
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('${ApiServices.baseUrl}/users/$userId'));
-    request.headers['Authorization'] = 'Bearer $token';
-    request.fields
-        .addAll(userData.map((key, value) => MapEntry(key, value.toString())));
+    try {
+      final url = Uri.parse('${ApiServices.baseUrl}/users/$userId');
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      };
+      final body = jsonEncode(userData);
 
-    if (imagePath != null && imagePath.isNotEmpty) {
-      request.files
-          .add(await http.MultipartFile.fromPath('foto_profile', imagePath));
-    }
+      print('URL: $url');
+      print('Headers: $headers');
+      print('Body: $body');
 
-    var response = await request.send();
-    if (response.statusCode != 200) {
-      final responseData = await response.stream.bytesToString();
-      final data = jsonDecode(responseData);
-      throw Exception(
-          'Failed to update user: ${data['message'] ?? response.statusCode}');
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode != 200) {
+        final data = jsonDecode(response.body);
+        print(
+            'Failed to update user: ${data['message'] ?? response.statusCode}');
+        throw Exception(
+            'Failed to update user: ${data['message'] ?? response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to update user: $e');
+      throw Exception('Failed to update user: $e');
     }
   }
 }

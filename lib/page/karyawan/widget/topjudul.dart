@@ -32,7 +32,7 @@ class topjudulkaryawan extends StatelessWidget {
               onPressed: () {
                 context
                     .read<MenuAppController>()
-                    .setSelectedItem('add karyawan');
+                    .setSelectedItem('add karyawan', isUpdate: false, id: "");
               },
               icon: Icon(Icons.add),
               label: Text("Add New"),
