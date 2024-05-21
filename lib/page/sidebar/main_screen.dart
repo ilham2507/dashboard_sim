@@ -17,7 +17,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedItem = context.watch<MenuAppController>().selectedItem;
-
+    final selectedItemId = context.watch<MenuAppController>().selectedItemId;
     Widget? selectedPage;
 
     if (selectedItem == 'dashboard') {
@@ -30,10 +30,10 @@ class MainScreen extends StatelessWidget {
       selectedPage = const addKaryawan();
     } else if (selectedItem == 'add proyek') {
       selectedPage = const addProyek();
-    } else if (selectedItem == 'detail karyawan') {
-      selectedPage = detailKaryawan();
-    } else if (selectedItem == 'detail proyek') {
-      selectedPage = const detailProyek();
+    } else if (selectedItem == 'detail karyawan' && selectedItemId != null) {
+      selectedPage = detailKaryawan(idUser: selectedItemId);
+    } else if (selectedItem == 'detail proyek' && selectedItemId != null) {
+      selectedPage = detailProyek(id: selectedItemId);
     }
 
     return Scaffold(

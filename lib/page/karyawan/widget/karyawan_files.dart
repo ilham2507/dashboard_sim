@@ -35,47 +35,44 @@ class _karyawanfileState extends State<karyawanfile> {
           topjudulkaryawan(),
           SizedBox(
             width: double.infinity,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: BlocProvider(
-                create: (context) =>
-                    UsersBloc(userService: UserService())..add(LoadUser()),
-                child: BlocBuilder<UsersBloc, UsersState>(
-                  builder: (context, state) {
-                    if (state is UsersLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (state is UsersError) {
-                      return Center(child: Text('Error: ${state.error}'));
-                    } else if (state is UsersLoaded) {
-                      final users = state.users;
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          columnSpacing: defaultPadding,
-                          columns: const [
-                            DataColumn(label: Text("No")),
-                            DataColumn(label: Text("Name")),
-                            DataColumn(label: Text("Position")),
-                            DataColumn(label: Text("Birth")),
-                            DataColumn(label: Text("No. Telp")),
-                            DataColumn(label: Text("Email")),
-                            DataColumn(label: Text("Gender")),
-                            DataColumn(label: Text("Address")),
-                          ],
-                          rows: List.generate(
-                            users.length,
-                            (index) => karyawanFileData(
-                                context, users[index], index + 1),
-                          ),
+            child: BlocProvider(
+              create: (context) =>
+                  UsersBloc(userService: UserService())..add(LoadUser()),
+              child: BlocBuilder<UsersBloc, UsersState>(
+                builder: (context, state) {
+                  if (state is UsersLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is UsersError) {
+                    return Center(child: Text('Error: ${state.error}'));
+                  } else if (state is UsersLoaded) {
+                    final users = state.users;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        columnSpacing: defaultPadding,
+                        columns: const [
+                          DataColumn(label: Text("No")),
+                          DataColumn(label: Text("Name")),
+                          DataColumn(label: Text("Position")),
+                          DataColumn(label: Text("Birth")),
+                          DataColumn(label: Text("No. Telp")),
+                          DataColumn(label: Text("Email")),
+                          DataColumn(label: Text("Gender")),
+                          DataColumn(label: Text("Address")),
+                        ],
+                        rows: List.generate(
+                          users.length,
+                          (index) => karyawanFileDataRow(
+                              context, users[index], index + 1),
                         ),
-                      );
-                    }
+                      ),
+                    );
+                  }
 
-                    return SizedBox();
-                  },
-                ),
+                  return SizedBox();
+                },
               ),
             ),
           ),
@@ -85,7 +82,7 @@ class _karyawanfileState extends State<karyawanfile> {
   }
 }
 
-DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
+DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
   return DataRow(
     cells: [
       DataCell(
@@ -93,11 +90,11 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
           onTap: () {
             context
                 .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
+                .setSelectedItem('detail karyawan', id: user.id.toString());
           },
           child: Container(
             width: 50,
-            child: Text(fileInfo.id!),
+            child: Text(id.toString()),
           ),
         ),
       ),
@@ -106,24 +103,11 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
           onTap: () {
             context
                 .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
-          },
-          child: Container(
-            width: 200,
-            child: Text(fileInfo.title!),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            context
-                .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
+                .setSelectedItem('detail karyawan', id: user.id.toString());
           },
           child: Container(
             width: 100,
-            child: Text(fileInfo.position!),
+            child: (Text(user.name)),
           ),
         ),
       ),
@@ -132,11 +116,11 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
           onTap: () {
             context
                 .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
+                .setSelectedItem('detail karyawan', id: user.id.toString());
           },
           child: Container(
             width: 100,
-            child: Text(fileInfo.birth!),
+            child: Text(user.role.name),
           ),
         ),
       ),
@@ -145,11 +129,11 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
           onTap: () {
             context
                 .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
+                .setSelectedItem('detail karyawan', id: user.id.toString());
           },
           child: Container(
             width: 130,
-            child: Text(fileInfo.telp!),
+            child: Text(DateFormat('dd MMMM yyyy').format(user.tanggalLahir)),
           ),
         ),
       ),
@@ -158,11 +142,11 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
           onTap: () {
             context
                 .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
+                .setSelectedItem('detail karyawan', id: user.id.toString());
           },
           child: Container(
             width: 130,
-            child: Text(fileInfo.email!),
+            child: Text(user.noTelp),
           ),
         ),
       ),
@@ -171,11 +155,24 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
           onTap: () {
             context
                 .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
+                .setSelectedItem('detail karyawan', id: user.id.toString());
+          },
+          child: Container(
+            width: 250,
+            child: Text(user.email),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            context
+                .read<MenuAppController>()
+                .setSelectedItem('detail karyawan', id: user.id.toString());
           },
           child: Container(
             width: 100,
-            child: Text(fileInfo.gender!),
+            child: Text(user.jenisKelamin),
           ),
         ),
       ),
@@ -184,11 +181,11 @@ DataRow karyawanFileDataRow(BuildContext context, karyawanfiledata fileInfo) {
           onTap: () {
             context
                 .read<MenuAppController>()
-                .setSelectedItem('detail karyawan');
+                .setSelectedItem('detail karyawan', id: user.id.toString());
           },
           child: Container(
-            width: 200,
-            child: Text(fileInfo.address!),
+            width: 100,
+            child: Text(user.alamat),
           ),
         ),
       ),

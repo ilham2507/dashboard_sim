@@ -26,3 +26,9 @@ class UsersError extends UsersState {
 class UsersStoring extends UsersState {}
 
 class UserStored extends UsersState {}
+
+class UserUpdated extends UsersState {
+  final User user;
+
+  UserUpdated(this.user);
+}

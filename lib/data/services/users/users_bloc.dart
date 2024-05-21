@@ -41,5 +41,19 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         emit(UsersError(e.toString()));
       }
     });
+
+    on<UpdateUserById>((event, emit) async {
+      emit(UsersLoading());
+      try {
+        final Map<String, String> userData =
+            event.userData.map((key, value) => MapEntry(key, value.toString()));
+        await userService.updateUserById(event.userId, userData,
+            imagePath: event.imagePath);
+        final updatedUser = await userService.getUserById(event.userId);
+        emit(UserUpdated(updatedUser));
+      } catch (e) {
+        emit(UsersError(e.toString()));
+      }
+    });
   }
 }

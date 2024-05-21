@@ -91,4 +91,32 @@ class UserService {
       throw Exception('Failed to load user: $e');
     }
   }
+
+  Future<void> updateUserById(String userId, Map<String, dynamic> userData,
+      {String? imagePath}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) {
+      throw Exception('Token not found in SharedPreferences');
+    }
+
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('${ApiServices.baseUrl}/users/$userId'));
+    request.headers['Authorization'] = 'Bearer $token';
+    request.fields
+        .addAll(userData.map((key, value) => MapEntry(key, value.toString())));
+
+    if (imagePath != null && imagePath.isNotEmpty) {
+      request.files
+          .add(await http.MultipartFile.fromPath('foto_profile', imagePath));
+    }
+
+    var response = await request.send();
+    if (response.statusCode != 200) {
+      final responseData = await response.stream.bytesToString();
+      final data = jsonDecode(responseData);
+      throw Exception(
+          'Failed to update user: ${data['message'] ?? response.statusCode}');
+    }
+  }
 }

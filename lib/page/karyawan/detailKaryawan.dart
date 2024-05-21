@@ -60,14 +60,16 @@ class detailKaryawan extends StatelessWidget {
                             ],
                           )
                         : Container(
-                            padding: EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                imageProfile(
-                                  id: idUser ?? "",
-                                ),
                                 SizedBox(
+                                  child: imageProfile(
+                                    id: idUser ?? "",
+                                  ),
+                                ),
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Center(child: profileWidget),

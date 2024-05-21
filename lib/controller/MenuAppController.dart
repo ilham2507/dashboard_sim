@@ -4,6 +4,8 @@ class MenuAppController extends ChangeNotifier {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String selectedItem = 'dashboard';
+  String? selectedItemId;
+
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
 
   void controlMenu() {
@@ -12,8 +14,9 @@ class MenuAppController extends ChangeNotifier {
     }
   }
 
-  void setSelectedItem(String item) {
+  void setSelectedItem(String item, {String? id}) {
     selectedItem = item;
+    selectedItemId = id;
     notifyListeners();
   }
 }

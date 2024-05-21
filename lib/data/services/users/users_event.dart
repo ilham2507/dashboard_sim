@@ -17,3 +17,15 @@ class GetUserById extends UsersEvent {
 
   GetUserById({required this.userId});
 }
+
+class UpdateUserById extends UsersEvent {
+  final Map<String, dynamic> userData;
+  final String? imagePath;
+  final String userId;
+
+  UpdateUserById({
+    required this.userId,
+    required this.userData,
+    this.imagePath,
+  });
+}
