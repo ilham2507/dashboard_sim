@@ -1,4 +1,5 @@
 import 'package:drawer/constants/constants.dart';
+import 'package:drawer/data/services/proyek/task/task_bloc.dart';
 import 'package:drawer/data/services/proyek/task/task_service.dart';
 import 'package:drawer/data/services/users/user_services.dart';
 import 'package:drawer/data/services/users/users_bloc.dart';
@@ -14,7 +15,8 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 class add_task extends StatefulWidget {
   String id;
   bool? isUpdate;
-  add_task({required this.id, this.isUpdate, super.key});
+  String? idTask;
+  add_task({required this.id, this.isUpdate, this.idTask, super.key});
 
   @override
   State<add_task> createState() => _add_taskState();
@@ -87,6 +89,8 @@ class _add_taskState extends State<add_task> {
       final taskServices = TaskService();
       if (widget.isUpdate == false) {
         await taskServices.storeTask(userData);
+      } else {
+        await taskServices.updateTaskById(widget.id, userData);
       }
 
       // Show success message
@@ -114,112 +118,143 @@ class _add_taskState extends State<add_task> {
       title: const Text("Tambah Tugas"),
       content: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            customformProyek(
-              title: "Tugas",
-              controller: tugas,
-            ),
-            customformProyek(
-              title: "Catatan",
-              controller: catatan,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: BlocProvider(
+          create: (context) => TaskBloc(taskService: TaskService())
+            ..add(widget.isUpdate == true
+                ? GetTaskById(taskId: widget.id)
+                : LoadTask()),
+          child: BlocBuilder<TaskBloc, TaskState>(
+            builder: (context, state) {
+              if (state is TaskLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (state is TaskByIdLoaded && widget.isUpdate == true) {
+                final task = state.task;
+                tugas.text = task.tugas ?? "";
+                catatan.text = task.catatan ?? "";
+                status.text = task.status ?? "";
+                nilai.text = task.nilai.toString();
+                // tgl.text = DateFormat("yyyy-MM-dd").format(user.tanggalLahir);
+                // sele = user.roleId.toString();
+                // selectedUserId = proyek.taskProyek['user_id']
+                selectedUserId =
+                    task.penerimaProyek!.map((task) => task.userId).toList();
+              } else if (state is TaskError) {
+                return Center(child: Text('Error: ${state.error}'));
+              }
+              return Column(
                 children: [
-                  Text(
-                    "Team",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                  customformProyek(
+                    title: "Tugas",
+                    controller: tugas,
+                  ),
+                  customformProyek(
+                    title: "Catatan",
+                    controller: catatan,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  BlocProvider(
-                    create: (context) =>
-                        UsersBloc(userService: UserService())..add(LoadUser()),
-                    child: BlocBuilder<UsersBloc, UsersState>(
-                      builder: (context, state) {
-                        if (state is UsersLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (state is UsersLoaded) {
-                          final List<ValueItem<dynamic>> dropdownOptions = state
-                              .users
-                              .map((user) => ValueItem(
-                                  label:
-                                      "Nama : ${user.name} - Role : ${user.role!.name}",
-                                  value: user.id))
-                              .toList();
-                          return MultiSelectDropDown(
-                            borderColor: Colors.white,
-                            fieldBackgroundColor: bgColor,
-                            dropdownBackgroundColor: secondaryColor,
-                            optionsBackgroundColor: secondaryColor,
-                            controller: _controller,
-                            onOptionSelected: (options) {
-                              setState(() {
-                                selectedUserId = options
-                                    .map((option) => option.value)
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Team",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        BlocProvider(
+                          create: (context) =>
+                              UsersBloc(userService: UserService())
+                                ..add(LoadUser()),
+                          child: BlocBuilder<UsersBloc, UsersState>(
+                            builder: (context, state) {
+                              if (state is UsersLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (state is UsersLoaded) {
+                                final List<
+                                    ValueItem<
+                                        dynamic>> dropdownOptions = state.users
+                                    .map((user) => ValueItem(
+                                        label:
+                                            "Nama : ${user.name} - Role : ${user.role!.name}",
+                                        value: user.id))
                                     .toList();
-                              });
-                              debugPrint(selectedUserId.toString());
-                              debugPrint(options.toString());
+                                return MultiSelectDropDown(
+                                  borderColor: Colors.white,
+                                  fieldBackgroundColor: bgColor,
+                                  dropdownBackgroundColor: secondaryColor,
+                                  optionsBackgroundColor: secondaryColor,
+                                  controller: _controller,
+                                  onOptionSelected: (options) {
+                                    setState(() {
+                                      selectedUserId = options
+                                          .map((option) => option.value)
+                                          .toList();
+                                    });
+                                    debugPrint(selectedUserId.toString());
+                                    debugPrint(options.toString());
+                                  },
+                                  options: dropdownOptions,
+                                  disabledOptions: const [
+                                    ValueItem(label: 'Option 1', value: '1')
+                                  ],
+                                  selectionType: SelectionType.multi,
+                                  chipConfig:
+                                      const ChipConfig(wrapType: WrapType.wrap),
+                                  optionTextStyle:
+                                      const TextStyle(fontSize: 16),
+                                  selectedOptionIcon:
+                                      const Icon(Icons.check_circle),
+                                );
+                              } else if (state is UsersError) {
+                                return Center(
+                                    child: Text('Error: ${state.error}'));
+                              }
+                              return SizedBox();
                             },
-                            options: dropdownOptions,
-                            disabledOptions: const [
-                              ValueItem(label: 'Option 1', value: '1')
-                            ],
-                            selectionType: SelectionType.multi,
-                            chipConfig:
-                                const ChipConfig(wrapType: WrapType.wrap),
-                            optionTextStyle: const TextStyle(fontSize: 16),
-                            selectedOptionIcon: const Icon(Icons.check_circle),
-                          );
-                        } else if (state is UsersError) {
-                          return Center(child: Text('Error: ${state.error}'));
-                        }
-                        return SizedBox();
-                      },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 8,
+                  customform(
+                    title: "start",
+                    controller: start,
+                    onTap: () {
+                      selectDate(context);
+                    },
+                  ),
+                  customform(
+                    title: "Deadline",
+                    controller: deadline,
+                    onTap: () {
+                      selectDate2(context);
+                    },
+                  ),
+                  customformProyek(
+                    title: "Status",
+                    controller: status,
+                  ),
+                  customformProyek(
+                    title: "Nilai",
+                    controller: nilai,
                   ),
                 ],
-              ),
-            ),
-            customform(
-              title: "start",
-              controller: start,
-              onTap: () {
-                selectDate(context);
-              },
-            ),
-            customform(
-              title: "Deadline",
-              controller: deadline,
-              onTap: () {
-                selectDate2(context);
-              },
-            ),
-            customformProyek(
-              title: "Status",
-              controller: status,
-            ),
-            customformProyek(
-              title: "Nilai",
-              controller: nilai,
-            ),
-          ],
+              );
+            },
+          ),
         ),
       ),
       actions: [
