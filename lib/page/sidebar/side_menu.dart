@@ -15,13 +15,11 @@ class SideMenu extends StatelessWidget {
       future: _getRoleId(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); 
+          return CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          return Text(
-              'Error: ${snapshot.error}'); 
+          return Text('Error: ${snapshot.error}');
         } else {
-          final roleId = snapshot.data ??
-              0; 
+          final roleId = snapshot.data ?? 0;
           return Drawer(
             child: ListView(
               children: [
@@ -37,7 +35,7 @@ class SideMenu extends StatelessWidget {
                         .setSelectedItem('dashboard');
                   },
                 ),
-                if (roleId != 5)
+                if (roleId != 4)
                   DrawerListTile(
                     title: "karyawan",
                     svgSrc: "assets/icons/menu_tran.svg",

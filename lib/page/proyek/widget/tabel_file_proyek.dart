@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class proyekfile extends StatelessWidget {
   const proyekfile({
@@ -32,66 +33,86 @@ class proyekfile extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: BlocProvider(
-                create: (context) =>
-                    ProyekBloc(proyekServices: ProyekServices())
-                      ..add(LoadProyek()),
-                child: BlocBuilder<ProyekBloc, ProyekState>(
-                  builder: (context, state) {
-                    if (state is ProyekLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (state is ProyekError) {
-                      return Center(child: Text('Error: ${state.error}'));
-                    } else if (state is ProyekLoaded) {
-                      final proyeks = state.proyeks;
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        controller: ScrollController(),
-                        child: DataTable(
-                          columnSpacing: defaultPadding,
-                          columns: const [
-                            DataColumn(
-                              label: Text("No"),
+              create: (context) => ProyekBloc(proyekServices: ProyekServices())
+                ..add(LoadProyek()),
+              child: BlocBuilder<ProyekBloc, ProyekState>(
+                builder: (context, state) {
+                  if (state is ProyekLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is ProyekError) {
+                    return Center(child: Text('Error: ${state.error}'));
+                  } else if (state is ProyekLoaded) {
+                    final proyeks = state.proyeks;
+                    return FutureBuilder<List<DataRow>>(
+                      future: _buildDataRows(context, proyeks),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<DataRow>> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: ScrollController(),
+                            child: DataTable(
+                              columnSpacing: defaultPadding,
+                              columns: const [
+                                DataColumn(
+                                  label: Text("No"),
+                                ),
+                                DataColumn(
+                                  label: Text("Project Name"),
+                                ),
+                                DataColumn(
+                                  label: Text("Klien"),
+                                ),
+                                DataColumn(
+                                  label: Text("Manager"),
+                                ),
+                                DataColumn(
+                                  label: Text("Start"),
+                                ),
+                                DataColumn(
+                                  label: Text("Finished"),
+                                ),
+                                DataColumn(
+                                  label: Text("Nilai"),
+                                ),
+                                DataColumn(
+                                  label: Text("Aksi"),
+                                ),
+                              ],
+                              rows: snapshot.data!,
                             ),
-                            DataColumn(
-                              label: Text("Project Name"),
-                            ),
-                            DataColumn(
-                              label: Text("Klien"),
-                            ),
-                            DataColumn(
-                              label: Text("Manager"),
-                            ),
-                            DataColumn(
-                              label: Text("Start"),
-                            ),
-                            DataColumn(
-                              label: Text("Finished"),
-                            ),
-                            DataColumn(
-                              label: Text("Nilai"),
-                            ),
-                            DataColumn(
-                              label: Text("Aksi"),
-                            ),
-                          ],
-                          rows: List.generate(
-                            proyeks.length,
-                            (index) => proyekFileDataRow(
-                                context, proyeks[index], index + 1),
-                          ),
-                        ),
-                      );
-                    }
-
-                    return SizedBox();
-                  },
-                )),
+                          );
+                        }
+                      },
+                    );
+                  }
+                  return SizedBox();
+                },
+              ),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Future<List<DataRow>> _buildDataRows(
+      BuildContext context, List<Proyek> proyeks) async {
+    List<DataRow> dataRows = [];
+    for (int index = 0; index < proyeks.length; index++) {
+      DataRow dataRow =
+          await proyekFileDataRow(context, proyeks[index], index + 1);
+      dataRows.add(dataRow);
+    }
+    return dataRows;
   }
 }
 
@@ -108,7 +129,10 @@ void deleteData(String id, BuildContext context) async {
   }
 }
 
-DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
+Future<DataRow> proyekFileDataRow(
+    BuildContext context, Proyek proyek, int id) async {
+  final prefs = await SharedPreferences.getInstance();
+  final roleId = prefs.getInt('role_id') ?? 0;
   return DataRow(
     cells: [
       DataCell(
@@ -204,37 +228,39 @@ DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
           ),
         ),
       ),
-      DataCell(
-        Row(
-          children: [
-            IconButton(
-                color: Colors.blue,
-                onPressed: () {
-                  context.read<MenuAppController>().setSelectedItem(
-                      'add proyek',
-                      id: proyek.id.toString(),
-                      isUpdate: true);
-                },
-                icon: Icon(Icons.edit_note_outlined)),
-            IconButton(
-                color: Colors.red,
-                onPressed: () {
-                  AwesomeDialog(
-                          width: 500,
-                          context: context,
-                          animType: AnimType.scale,
-                          title: "Warning",
-                          btnCancelOnPress: () {},
-                          btnOkOnPress: () {
-                            deleteData(proyek.id.toString(), context);
-                          },
-                          desc: "Are you sure to delete the data?")
-                      .show();
-                },
-                icon: Icon(Icons.remove_circle_outline_sharp)),
-          ],
-        ),
-      ),
+      roleId != 4
+          ? DataCell(
+              Row(
+                children: [
+                  IconButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        context.read<MenuAppController>().setSelectedItem(
+                            'add proyek',
+                            id: proyek.id.toString(),
+                            isUpdate: true);
+                      },
+                      icon: Icon(Icons.edit_note_outlined)),
+                  IconButton(
+                      color: Colors.red,
+                      onPressed: () {
+                        AwesomeDialog(
+                                width: 500,
+                                context: context,
+                                animType: AnimType.scale,
+                                title: "Warning",
+                                btnCancelOnPress: () {},
+                                btnOkOnPress: () {
+                                  deleteData(proyek.id.toString(), context);
+                                },
+                                desc: "Are you sure to delete the data?")
+                            .show();
+                      },
+                      icon: Icon(Icons.remove_circle_outline_sharp)),
+                ],
+              ),
+            )
+          : DataCell(Text(''))
     ],
   );
 }

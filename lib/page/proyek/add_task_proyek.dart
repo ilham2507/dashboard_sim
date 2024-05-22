@@ -75,17 +75,19 @@ class _add_taskState extends State<add_task> {
       isLoading = true;
     });
     try {
+      String start = DateFormat('yyyy-MM-dd').format(selectedDate!);
+      String finish = DateFormat('yyyy-MM-dd').format(selectedDate2!);
       Map<String, dynamic> userData = {
         'tugas': tugas.text,
         'catatan': catatan.text,
-        'start': start.text,
-        'deadline': deadline.text,
+        'start': start,
+        'deadline': finish,
         'status': status.text,
         'nilai': nilai.text,
         'user_ids': selectedUserId,
-        'proyek_id': widget.id,
+        'proyek_id': widget.idTask,
       };
-
+      print(userData);
       final taskServices = TaskService();
       if (widget.isUpdate == false) {
         await taskServices.storeTask(userData);
@@ -99,7 +101,7 @@ class _add_taskState extends State<add_task> {
               ? "Update task successfully"
               : "Store task successfully",
           toastLength: Toast.LENGTH_LONG);
-      context.read<MenuAppController>().setSelectedItem('proyek');
+      context.read<MenuAppController>().setSelectedItem('dashboard');
       // setState(() {});
     } catch (e) {
       Fluttertoast.showToast(
