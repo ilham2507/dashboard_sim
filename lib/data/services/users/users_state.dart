@@ -32,3 +32,5 @@ class UserUpdated extends UsersState {
 
   UserUpdated(this.user);
 }
+
+class UserDeleted extends UsersState {}

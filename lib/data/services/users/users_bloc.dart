@@ -54,5 +54,15 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         emit(UsersError(e.toString()));
       }
     });
+
+    on<DeleteUserById>((event, emit) async {
+      emit(UsersLoading());
+      try {
+        await userService.deleteUserById(event.userId);
+        emit(UserDeleted());
+      } catch (e) {
+        emit(UsersError(e.toString()));
+      }
+    });
   }
 }

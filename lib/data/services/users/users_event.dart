@@ -28,3 +28,9 @@ class UpdateUserById extends UsersEvent {
     this.imagePath,
   });
 }
+
+class DeleteUserById extends UsersEvent {
+  final String userId;
+
+  DeleteUserById({required this.userId});
+}
