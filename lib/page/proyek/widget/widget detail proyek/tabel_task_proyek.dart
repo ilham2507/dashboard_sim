@@ -1,5 +1,6 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/data/model/penerima_proyek.dart';
 import 'package:drawer/data/model/task_proyek.dart';
 import 'package:drawer/data/services/proyek/proyek_bloc.dart';
 import 'package:drawer/data/services/proyek/proyek_service.dart';
@@ -46,7 +47,10 @@ class tabelTaskProyek extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return add_task();
+                      return add_task(
+                        id: id ?? "",
+                        isUpdate: false,
+                      );
                     },
                   );
                 },
@@ -85,6 +89,9 @@ class tabelTaskProyek extends StatelessWidget {
                               label: Text("Catatan"),
                             ),
                             DataColumn(
+                              label: Text("Pekerja"),
+                            ),
+                            DataColumn(
                               label: Text("Start"),
                             ),
                             DataColumn(
@@ -105,7 +112,6 @@ class tabelTaskProyek extends StatelessWidget {
                         ),
                       );
                     }
-
                     return SizedBox();
                   },
                 )),
@@ -125,7 +131,9 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return add_task();
+                return add_task(
+                  id: task.id.toString(),
+                );
               },
             );
           },
@@ -142,7 +150,9 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return add_task();
+                return add_task(
+                  id: task.id.toString(),
+                );
               },
             );
           },
@@ -153,29 +163,36 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task) {
           ),
         ),
       ),
-      // DataCell(
-      //   GestureDetector(
-      //     onTap: () {
-      //       showDialog(
-      //         context: context,
-      //         builder: (BuildContext context) {
-      //           return add_task();
-      //         },
-      //       );
-      //     },
-      //     child: Container(
-      //       padding: EdgeInsets.symmetric(horizontal: 10),
-      //       child: Text(task.pekerja ?? ""),
-      //     ),
-      //   ),
-      // ),
       DataCell(
         GestureDetector(
           onTap: () {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return add_task();
+                return add_task(
+                  id: task.id.toString(),
+                );
+              },
+            );
+          },
+          child: Container(
+            width: 200,
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(task.penerimaProyek != null
+                ? getPenerimaNames(task.penerimaProyek)
+                : ""),
+          ),
+        ),
+      ),
+      DataCell(
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return add_task(
+                  id: task.id.toString(),
+                );
               },
             );
           },
@@ -192,7 +209,9 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return add_task();
+                return add_task(
+                  id: task.id.toString(),
+                );
               },
             );
           },
@@ -209,7 +228,9 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return add_task();
+                return add_task(
+                  id: task.id.toString(),
+                );
               },
             );
           },
@@ -226,7 +247,9 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return add_task();
+                return add_task(
+                  id: task.id.toString(),
+                );
               },
             );
           },
@@ -241,36 +264,9 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task) {
   );
 }
 
-DataRow recentTaskData(BuildContext context, List<TaskProyek> taskList) {
-  return DataRow(
-    cells: List.generate(
-      taskList.length,
-      (index) => DataCell(
-        GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return add_task();
-              },
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Tugas: ${taskList[index].tugas ?? ""}"),
-                Text("Catatan: ${taskList[index].catatan ?? ""}"),
-                Text("Start: ${taskList[index].start ?? ""}"),
-                Text("Deadline: ${taskList[index].deadline ?? ""}"),
-                Text("Status: ${taskList[index].status ?? ""}"),
-                Text("Nilai: ${taskList[index].nilai.toString()}"),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
+String getPenerimaNames(List<PenerimaProyek>? penerimaProyek) {
+  if (penerimaProyek == null || penerimaProyek.isEmpty) {
+    return "";
+  }
+  return penerimaProyek.map((penerima) => penerima.user!.name).join(', ');
 }

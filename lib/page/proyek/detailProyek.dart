@@ -141,29 +141,29 @@ class detailProyek extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        Wrap(
-                                          children: [
-                                            Text(
-                                              "Team : ",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: proyek.taskProyek !=
-                                                      null
-                                                  ? proyek.taskProyek!
-                                                      .map((task) {
-                                                      return Text(
-                                                          task.user?.name ??
-                                                              "Unknown");
-                                                    }).toList()
-                                                  : [Text("No team members")],
-                                            ),
-                                          ],
-                                        ),
+                                        // Wrap(
+                                        //   children: [
+                                        //     Text(
+                                        //       "Team : ",
+                                        //       style: TextStyle(
+                                        //         fontWeight: FontWeight.bold,
+                                        //       ),
+                                        //     ),
+                                        //     Column(
+                                        //       crossAxisAlignment:
+                                        //           CrossAxisAlignment.start,
+                                        //       children: proyek.taskProyek !=
+                                        //               null
+                                        //           ? proyek.taskProyek!
+                                        //               .map((task) {
+                                        //               return Text(
+                                        //                   task.user?.name ??
+                                        //                       "Unknown");
+                                        //             }).toList()
+                                        //           : [Text("No team members")],
+                                        //     ),
+                                        //   ],
+                                        // ),
                                       ],
                                     ),
                                   );
