@@ -1,6 +1,10 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/data/services/proyek/proyek_bloc.dart';
+import 'package:drawer/data/services/proyek/proyek_service.dart';
+import 'package:drawer/data/services/proyek/proyek_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class cardView extends StatelessWidget {
   const cardView({Key? key}) : super(key: key);
@@ -9,17 +13,21 @@ class cardView extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Container(
-      child: Responsive(
-        mobile: AnalyticInfoCardGridView(
-          crossAxisCount: size.width < 650 ? 2 : 4,
-          childAspectRatio: size.width < 650 ? 2 : 1.5,
-        ),
-        tablet: AnalyticInfoCardGridView(
-          childAspectRatio: size.width < 1000 ? 2 : 4,
-        ),
-        desktop: AnalyticInfoCardGridView(
-          childAspectRatio: size.width < 1400 ? 2 : 4,
+    return BlocProvider(
+      create: (context) =>
+          ProyekBloc(proyekServices: ProyekServices())..add(GetProyekCounts()),
+      child: Container(
+        child: Responsive(
+          mobile: AnalyticInfoCardGridView(
+            crossAxisCount: size.width < 650 ? 2 : 4,
+            childAspectRatio: size.width < 650 ? 2 : 1.5,
+          ),
+          tablet: AnalyticInfoCardGridView(
+            childAspectRatio: size.width < 1000 ? 2 : 4,
+          ),
+          desktop: AnalyticInfoCardGridView(
+            childAspectRatio: size.width < 1400 ? 2 : 4,
+          ),
         ),
       ),
     );
@@ -38,19 +46,44 @@ class AnalyticInfoCardGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: analyticData.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: defaultPadding,
-        mainAxisSpacing: defaultPadding,
-        childAspectRatio: childAspectRatio,
-      ),
-      itemBuilder: (context, index) => cardinfo(
-        info: analyticData[index],
-      ),
+    return BlocBuilder<ProyekBloc, ProyekState>(
+      builder: (context, state) {
+        if (state is ProyekCountsLoading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is ProyekCountsLoaded) {
+          List<cardInfo> analyticData = [
+            cardInfo(
+              title: "On Progress",
+              count: state.onProgress,
+              image: "assets/icons/progres.png",
+            ),
+            cardInfo(
+              title: "Selesai",
+              count: state.totalProyekSelesai,
+              image: "assets/icons/finish.png",
+            ),
+          ];
+
+          return GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: analyticData.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: defaultPadding,
+              mainAxisSpacing: defaultPadding,
+              childAspectRatio: childAspectRatio,
+            ),
+            itemBuilder: (context, index) => cardinfo(
+              info: analyticData[index],
+            ),
+          );
+        } else if (state is ProyekError) {
+          return Center(child: Text('Error: ${state.error}'));
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }

@@ -44,13 +44,10 @@ class _addProyekState extends State<addProyek> {
       lastDate: DateTime(2100),
     );
     if (pickedDate != null && pickedDate != selectedDate) {
-      selectedDate = pickedDate;
-      String tglnew = DateFormat('yyyy-MM-dd').format(pickedDate);
       setState(() {
-        start.text = tglnew;
+        selectedDate = pickedDate;
       });
     }
-    setState(() {});
   }
 
   void selectDate2(BuildContext context) async {
@@ -61,10 +58,9 @@ class _addProyekState extends State<addProyek> {
       lastDate: DateTime(2100),
     );
     if (pickedDate != null && pickedDate != selectedDate2) {
-      selectedDate2 = pickedDate;
-      String tglnew = DateFormat('yyyy-MM-dd').format(pickedDate);
       setState(() {
-        finish.text = tglnew;
+        selectedDate2 = pickedDate;
+        print(selectedDate2);
       });
     }
   }
@@ -73,23 +69,23 @@ class _addProyekState extends State<addProyek> {
   final detail = TextEditingController();
   final manager = TextEditingController();
   final nilai = TextEditingController();
-  TextEditingController start = TextEditingController();
-  TextEditingController finish = TextEditingController();
   final klien = TextEditingController();
   void storeProyek() async {
     setState(() {
       isLoading = true;
     });
     try {
+      String start = DateFormat('yyyy-MM-dd').format(selectedDate!);
+      String finish = DateFormat('yyyy-MM-dd').format(selectedDate2!);
+      print(finish);
       Map<String, dynamic> userData = {
         'nama': nama.text,
         'detail': detail.text,
         'manager': manager.text,
         'nilai': nilai.text,
-        'start': start.text,
-        'finish': finish.text,
+        'start': start,
+        'finish': finish,
         'klien': klien.text,
-        // 'user_ids': selectedUserId,
       };
 
       final proyekService = ProyekServices();
@@ -99,7 +95,6 @@ class _addProyekState extends State<addProyek> {
         await proyekService.updateProyekById(widget.id ?? "", userData);
       }
 
-      // Show success message
       Fluttertoast.showToast(
           msg: widget.isUpdate == true
               ? "Update proyek successfully"
@@ -135,13 +130,9 @@ class _addProyekState extends State<addProyek> {
               detail.text = proyek.detail ?? "";
               manager.text = proyek.manager ?? "";
               nilai.text = proyek.nilai.toString();
-              start.text = proyek.start ?? "";
-              finish.text = proyek.finish ?? "";
+              selectedDate = DateTime.parse(proyek.start!);
+              selectedDate2 = DateTime.parse(proyek.finish!);
               klien.text = proyek.klien ?? "";
-
-              // tgl.text = DateFormat("yyyy-MM-dd").format(user.tanggalLahir);
-              // sele = user.roleId.toString();
-              // selectedUserId = proyek.taskProyek['user_id']
               selectedUserId =
                   proyek.taskProyek!.map((task) => task.userId).toList();
             } else if (state is ProyekError) {
@@ -182,101 +173,111 @@ class _addProyekState extends State<addProyek> {
                               title: "Manager",
                               controller: manager,
                             ),
-                            // Container(
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(14),
-                            //   ),
-                            //   child: Column(
-                            //     mainAxisAlignment: MainAxisAlignment.start,
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     children: [
-                            //       Text(
-                            //         "Team",
-                            //         style: TextStyle(
-                            //           color: Colors.white,
-                            //           fontWeight: FontWeight.bold,
-                            //         ),
-                            //       ),
-                            //       const SizedBox(
-                            //         height: 8,
-                            //       ),
-                            //       BlocProvider(
-                            //         create: (context) =>
-                            //             UsersBloc(userService: UserService())
-                            //               ..add(LoadUser()),
-                            //         child: BlocBuilder<UsersBloc, UsersState>(
-                            //           builder: (context, state) {
-                            //             if (state is UsersLoading) {
-                            //               return const Center(
-                            //                 child: CircularProgressIndicator(),
-                            //               );
-                            //             } else if (state is UsersLoaded) {
-                            //               final List<ValueItem<dynamic>>
-                            //                   dropdownOptions = state.users
-                            //                       .map((user) => ValueItem(
-                            //                           label: user.name,
-                            //                           value: user.id))
-                            //                       .toList();
-                            //               return MultiSelectDropDown(
-                            //                 borderColor: Colors.white,
-                            //                 fieldBackgroundColor: bgColor,
-                            //                 dropdownBackgroundColor:
-                            //                     secondaryColor,
-                            //                 optionsBackgroundColor:
-                            //                     secondaryColor,
-                            //                 controller: _controller,
-                            //                 onOptionSelected: (options) {
-                            //                   setState(() {
-                            //                     selectedUserId = options
-                            //                         .map((option) =>
-                            //                             option.value)
-                            //                         .toList();
-                            //                   });
-                            //                   debugPrint(
-                            //                       selectedUserId.toString());
-                            //                   debugPrint(options.toString());
-                            //                 },
-                            //                 options: dropdownOptions,
-                            //                 disabledOptions: const [
-                            //                   ValueItem(
-                            //                       label: 'Option 1', value: '1')
-                            //                 ],
-                            //                 selectionType: SelectionType.multi,
-                            //                 chipConfig: const ChipConfig(
-                            //                     wrapType: WrapType.wrap),
-                            //                 optionTextStyle:
-                            //                     const TextStyle(fontSize: 16),
-                            //                 selectedOptionIcon:
-                            //                     const Icon(Icons.check_circle),
-                            //               );
-                            //             } else if (state is UsersError) {
-                            //               return Center(
-                            //                   child: Text(
-                            //                       'Error: ${state.error}'));
-                            //             }
-                            //             return SizedBox();
-                            //           },
-                            //         ),
-                            //       ),
-                            //       const SizedBox(
-                            //         height: 8,
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-                            customform(
-                              title: "Start",
-                              onTap: () {
-                                selectDate(context);
-                              },
-                              controller: start,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Start",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    selectDate(context);
+                                  },
+                                  child: Container(
+                                    height: 50,
+                                    padding: EdgeInsets.only(left: 8),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 1, // Lebar border
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          14), // Radius border
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          selectedDate != null
+                                              ? DateFormat('yyyy-MM-dd')
+                                                  .format(selectedDate!)
+                                              : "Select Date",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                              ],
                             ),
-                            customform(
-                              title: "Finish",
-                              controller: finish,
-                              onTap: () {
-                                selectDate2(context);
-                              },
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Finish",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    selectDate2(context);
+                                  },
+                                  child: Container(
+                                    height: 50,
+                                    padding: EdgeInsets.only(left: 8),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 1, // Lebar border
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          14), // Radius border
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          selectedDate2 != null
+                                              ? DateFormat('yyyy-MM-dd')
+                                                  .format(selectedDate!)
+                                              : "Select Date",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                              ],
                             ),
                             if (Responsive.isMobile(context))
                               SizedBox(height: defaultPadding),

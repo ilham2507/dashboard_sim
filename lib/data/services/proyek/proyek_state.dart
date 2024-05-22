@@ -34,3 +34,21 @@ class ProyekUpdated extends ProyekState {
 }
 
 class ProyekDeleted extends ProyekState {}
+
+class ProyekCountsLoading extends ProyekState {}
+
+class ProyekCountsLoaded extends ProyekState {
+  final int totalProyekSelesai;
+  final int onProgress;
+
+  ProyekCountsLoaded(
+      {required this.totalProyekSelesai, required this.onProgress});
+}
+
+class ProjectDataLoading extends ProyekState {}
+
+class ProjectDataLoaded extends ProyekState {
+  final List<ProjectData> projects;
+
+  ProjectDataLoaded({required this.projects});
+}

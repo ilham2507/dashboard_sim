@@ -121,7 +121,7 @@ class _addKaryawanState extends State<addKaryawan> {
                 nip.text = user.nip;
                 email.text = user.email;
                 jk.text = user.jenisKelamin;
-                // tgl.text = DateFormat("yyyy-MM-dd").format(user.tanggalLahir);
+                tgl.text = DateFormat("yyyy-MM-dd").format(user.tanggalLahir);
                 notelp.text = user.noTelp;
                 alamat.text = user.alamat;
                 selectedRoleId = user.roleId.toString();

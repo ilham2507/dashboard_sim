@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:drawer/data/model/proyek-data.dart';
 import 'package:drawer/data/model/proyek.dart';
 import 'package:drawer/data/services/proyek/proyek_service.dart';
 import 'package:meta/meta.dart';
@@ -14,6 +15,16 @@ class ProyekBloc extends Bloc<ProyekEvent, ProyekState> {
       emit(ProyekLoading());
       try {
         final res = await proyekServices.getProyek();
+        emit(ProyekLoaded(res));
+      } catch (e) {
+        emit(ProyekError(e.toString()));
+      }
+    });
+
+    on<LoadRecentProyek>((event, emit) async {
+      emit(ProyekLoading());
+      try {
+        final res = await proyekServices.getRecentProyek();
         emit(ProyekLoaded(res));
       } catch (e) {
         emit(ProyekError(e.toString()));
@@ -60,6 +71,29 @@ class ProyekBloc extends Bloc<ProyekEvent, ProyekState> {
       try {
         await proyekServices.deleteProyekById(event.proyekId);
         emit(ProyekDeleted());
+      } catch (e) {
+        emit(ProyekError(e.toString()));
+      }
+    });
+
+    on<GetProyekCounts>((event, emit) async {
+      emit(ProyekCountsLoading());
+      try {
+        final counts = await proyekServices.getCountProyek();
+        emit(ProyekCountsLoaded(
+          totalProyekSelesai: counts['totalProyekSelesai']!,
+          onProgress: counts['onProgress']!,
+        ));
+      } catch (e) {
+        emit(ProyekError(e.toString()));
+      }
+    });
+
+    on<GetProjectData>((event, emit) async {
+      emit(ProjectDataLoading());
+      try {
+        final projects = await proyekServices.getProjectData();
+        emit(ProjectDataLoaded(projects: projects));
       } catch (e) {
         emit(ProyekError(e.toString()));
       }

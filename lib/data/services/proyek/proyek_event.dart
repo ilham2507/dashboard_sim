@@ -5,6 +5,8 @@ sealed class ProyekEvent {}
 
 class LoadProyek extends ProyekEvent {}
 
+class LoadRecentProyek extends ProyekEvent {}
+
 class GetProyekById extends ProyekEvent {
   final String userId;
 
@@ -32,3 +34,7 @@ class DeleteProyekById extends ProyekEvent {
 
   DeleteProyekById({required this.proyekId});
 }
+
+class GetProyekCounts extends ProyekEvent {}
+
+class GetProjectData extends ProyekEvent {}

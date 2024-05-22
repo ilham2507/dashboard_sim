@@ -31,9 +31,14 @@ class AuthenticationBloc
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         final token = jsonResponse['token'];
+        final roleId = jsonResponse['data']['role_id'];
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
+        await prefs.setInt('role_id', roleId);
+
+        print("token : $token");
+        print("role : $roleId");
 
         Fluttertoast.showToast(
           msg: "Login successful",

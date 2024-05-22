@@ -193,197 +193,22 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
         ),
       ),
       DataCell(
-        SizedBox(
-          width: 100,
-          child: IconButton(
-              color: Colors.red,
-              onPressed: () {
-                AwesomeDialog(
-                        width: 500,
-                        context: context,
-                        animType: AnimType.scale,
-                        title: "Warning",
-                        btnCancelOnPress: () {},
-                        btnOkOnPress: () {
-                          deleteData(user.id.toString(), context);
-                        },
-                        desc: "Are you sure to delete the data?")
-                    .show();
-              },
-              icon: Icon(Icons.remove_circle_outline_sharp)),
-        ),
-      ),
-    ],
-  );
-}
-
-DataRow karyawanFileData(BuildContext context, User user, int id) {
-  return DataRow(
-    cells: [
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(id.toString()),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(user.name),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(user.role!.name),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(DateFormat('dd MMMM yyyy').format(user.tanggalLahir)),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(user.noTelp),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(user.email),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(user.jenisKelamin),
-          ),
-        ),
-      ),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    detailKaryawan(idUser: user.id.toString()),
-              ),
-            );
-          },
-          child: Container(
-            width: 200,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(user.alamat),
-          ),
-        ),
-      ),
-      DataCell(
-        SizedBox(
-          width: 100,
-          child: IconButton(
-              color: Colors.red,
-              onPressed: () {
-                AwesomeDialog(
-                        width: 500,
-                        context: context,
-                        animType: AnimType.scale,
-                        title: "Warning",
-                        btnCancelOnPress: () {},
-                        btnOkOnPress: () {
-                          deleteData(user.id.toString(), context);
-                        },
-                        desc: "Are you sure to delete the data?")
-                    .show();
-              },
-              icon: Icon(Icons.remove_circle_outline_sharp)),
-        ),
+        IconButton(
+            color: Colors.red,
+            onPressed: () {
+              AwesomeDialog(
+                      width: 500,
+                      context: context,
+                      animType: AnimType.scale,
+                      title: "Warning",
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {
+                        deleteData(user.id.toString(), context);
+                      },
+                      desc: "Are you sure to delete the data?")
+                  .show();
+            },
+            icon: Icon(Icons.remove_circle_outline_sharp)),
       ),
     ],
   );
@@ -395,9 +220,9 @@ void deleteData(String id, BuildContext context) async {
     await userServices.deleteUserById(id);
     Fluttertoast.showToast(
         msg: "Delete user successfully", toastLength: Toast.LENGTH_LONG);
-    context.read<MenuAppController>().setSelectedItem('karyawan');
+    context.read<MenuAppController>().setSelectedItem('dashboard');
   } catch (e) {
     Fluttertoast.showToast(
-        msg: "Failed to delete proyek: $e", toastLength: Toast.LENGTH_LONG);
+        msg: "Failed to delete user: $e", toastLength: Toast.LENGTH_LONG);
   }
 }

@@ -42,7 +42,7 @@ class TaskService {
     }
 
     try {
-      final url = Uri.parse('${ApiServices.baseUrl}/tasks/$proyekId');
+      final url = Uri.parse('${ApiServices.baseUrl}/tasks-update/$proyekId');
       final headers = {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ class TaskService {
     }
 
     try {
-      final url = Uri.parse('${ApiServices.baseUrl}/tasks/$proyekId');
+      final url = Uri.parse('${ApiServices.baseUrl}/tasks-delete/$proyekId');
       final headers = {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

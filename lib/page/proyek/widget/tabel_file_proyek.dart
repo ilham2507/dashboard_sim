@@ -110,10 +110,6 @@ void deleteData(String id, BuildContext context) async {
 
 DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
   return DataRow(
-    onLongPress: () {
-      context.read<MenuAppController>().setSelectedItem('add proyek',
-          id: proyek.id.toString(), isUpdate: true);
-    },
     cells: [
       DataCell(
         GestureDetector(
@@ -175,7 +171,7 @@ DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
                 .setSelectedItem('detail proyek', id: proyek.id.toString());
           },
           child: Container(
-            width: 100,
+            width: 200,
             child: Text(DateFormat('EEEE, MMMM d, y')
                 .format(DateTime.parse(proyek.start!))),
           ),
@@ -189,7 +185,7 @@ DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
                 .setSelectedItem('detail proyek', id: proyek.id.toString());
           },
           child: Container(
-            width: 100,
+            width: 200,
             child: Text(DateFormat('EEEE, MMMM d, y')
                 .format(DateTime.parse(proyek.finish!))),
           ),
@@ -204,29 +200,39 @@ DataRow proyekFileDataRow(BuildContext context, Proyek proyek, int id) {
           },
           child: Container(
             width: 100,
-            child: Text(proyek.nilai.toString()),
+            child: Text("${proyek.nilai}%"),
           ),
         ),
       ),
       DataCell(
-        SizedBox(
-          width: 100,
-          child: IconButton(
-              color: Colors.red,
-              onPressed: () {
-                AwesomeDialog(
-                        width: 500,
-                        context: context,
-                        animType: AnimType.scale,
-                        title: "Warning",
-                        btnCancelOnPress: () {},
-                        btnOkOnPress: () {
-                          deleteData(proyek.id.toString(), context);
-                        },
-                        desc: "Are you sure to delete the data?")
-                    .show();
-              },
-              icon: Icon(Icons.remove_circle_outline_sharp)),
+        Row(
+          children: [
+            IconButton(
+                color: Colors.blue,
+                onPressed: () {
+                  context.read<MenuAppController>().setSelectedItem(
+                      'add proyek',
+                      id: proyek.id.toString(),
+                      isUpdate: true);
+                },
+                icon: Icon(Icons.edit_note_outlined)),
+            IconButton(
+                color: Colors.red,
+                onPressed: () {
+                  AwesomeDialog(
+                          width: 500,
+                          context: context,
+                          animType: AnimType.scale,
+                          title: "Warning",
+                          btnCancelOnPress: () {},
+                          btnOkOnPress: () {
+                            deleteData(proyek.id.toString(), context);
+                          },
+                          desc: "Are you sure to delete the data?")
+                      .show();
+                },
+                icon: Icon(Icons.remove_circle_outline_sharp)),
+          ],
         ),
       ),
     ],

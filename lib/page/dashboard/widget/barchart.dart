@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:drawer/data/model/proyek-data.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,6 @@ class barchart extends StatelessWidget {
       BarChartData(
           borderData: FlBorderData(border: Border.all(width: 0)),
           groupsSpace: 15,
-          // data dari proyek yang berjalan dirubah menjadi diagram
           titlesData: FlTitlesData(
             show: true,
             bottomTitles: AxisTitles(
@@ -88,7 +88,7 @@ class barchart extends StatelessWidget {
                   }
                   return SideTitleWidget(
                     axisSide: meta.axisSide,
-                    space: 16.0, // like margin
+                    space: 12.0, // like margin
                     child: text,
                   );
                 },
@@ -252,6 +252,63 @@ class barchart extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5))
             ]),
           ]),
+    );
+  }
+}
+
+class BarChartWidget extends StatelessWidget {
+  final List<ProjectData> projects;
+
+  BarChartWidget({required this.projects});
+
+  @override
+  Widget build(BuildContext context) {
+    return BarChart(
+      BarChartData(
+        borderData: FlBorderData(border: Border.all(width: 0)),
+        groupsSpace: 15,
+        // alignment: BarChartAlignment.spaceEvenly,
+        maxY: 100,
+        // barTouchData: BarTouchData(enabled: false),
+        titlesData: FlTitlesData(
+          show: true,
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                const style = TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                );
+                int index = value.toInt();
+                if (index >= 0 && index < projects.length) {
+                  return Text(
+                    projects[index].projectName,
+                    style: style,
+                  );
+                }
+                return SizedBox();
+              },
+            ),
+          ),
+        ),
+        barGroups: projects.asMap().entries.map((entry) {
+          int index = entry.key;
+          ProjectData project = entry.value;
+          return BarChartGroupData(
+            x: index,
+            barRods: [
+              BarChartRodData(
+                toY: project.value.toDouble(),
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(5),
+                width: 20,
+              ),
+            ],
+          );
+        }).toList(),
+      ),
     );
   }
 }

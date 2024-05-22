@@ -100,7 +100,7 @@ class UserService {
     }
 
     try {
-      final url = Uri.parse('${ApiServices.baseUrl}/users/$userId');
+      final url = Uri.parse('${ApiServices.baseUrl}/users-update/$userId');
       final headers = {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ class UserService {
     }
 
     try {
-      final url = Uri.parse('${ApiServices.baseUrl}/users/$userId');
+      final url = Uri.parse('${ApiServices.baseUrl}/users-delete/$userId');
       final headers = {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

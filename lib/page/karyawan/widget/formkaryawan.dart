@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class customform extends StatelessWidget {
+class customform extends StatefulWidget {
   final String title;
   final bool obscuretext;
   final TextEditingController? controller;
@@ -21,30 +21,35 @@ class customform extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<customform> createState() => _customformState();
+}
+
+class _customformState extends State<customform> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (isShowtitle)
+        if (widget.isShowtitle)
           Text(
-            title,
+            widget.title,
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
-        if (isShowtitle)
+        if (widget.isShowtitle)
           const SizedBox(
             height: 8,
           ),
         TextFormField(
-          onTap: onTap,
-          keyboardType: keyboardType,
-          obscureText: obscuretext,
-          controller: controller,
-          readOnly: isReadOnly,
+          onTap: widget.onTap,
+          keyboardType: widget.keyboardType,
+          obscureText: widget.obscuretext,
+          controller: widget.controller,
+          readOnly: widget.isReadOnly,
           decoration: InputDecoration(
-            hintText: !isShowtitle ? title : null,
+            hintText: !widget.isShowtitle ? widget.title : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
             ),
