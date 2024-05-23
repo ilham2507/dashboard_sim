@@ -2,9 +2,11 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
 import 'package:drawer/data/model/proyek.dart';
+import 'package:drawer/data/model/task_proyek.dart';
 import 'package:drawer/data/services/proyek/proyek_bloc.dart';
 import 'package:drawer/data/services/proyek/proyek_service.dart';
 import 'package:drawer/models/data.dart';
+import 'package:drawer/page/proyek/addProyek.dart';
 import 'package:drawer/page/proyek/widget/topjudulproyek.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,37 +28,35 @@ class proyekfile extends StatelessWidget {
         color: secondaryColor,
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          topjudulproyek(),
-          SizedBox(
-            width: double.infinity,
-            child: BlocProvider(
-              create: (context) => ProyekBloc(proyekServices: ProyekServices())
-                ..add(LoadProyek()),
-              child: BlocBuilder<ProyekBloc, ProyekState>(
-                builder: (context, state) {
-                  if (state is ProyekLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (state is ProyekError) {
-                    return Center(child: Text('Error: ${state.error}'));
-                  } else if (state is ProyekLoaded) {
-                    final proyeks = state.proyeks;
-                    return FutureBuilder<List<DataRow>>(
-                      future: _buildDataRows(context, proyeks),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<DataRow>> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else {
-                          return SingleChildScrollView(
+      child: BlocProvider(
+        create: (context) =>
+            ProyekBloc(proyekServices: ProyekServices())..add(LoadProyek()),
+        child: BlocBuilder<ProyekBloc, ProyekState>(
+          builder: (context, state) {
+            if (state is ProyekLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is ProyekError) {
+              return Center(child: Text('Error: ${state.error}'));
+            } else if (state is ProyekLoaded) {
+              final proyeks = state.proyeks;
+              return FutureBuilder<List<DataRow>>(
+                future: _buildDataRows(context, proyeks),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<DataRow>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        topjudulproyek(),
+                        SizedBox(
+                          width: double.infinity,
+                          child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             controller: ScrollController(),
                             child: DataTable(
@@ -89,17 +89,17 @@ class proyekfile extends StatelessWidget {
                               ],
                               rows: snapshot.data!,
                             ),
-                          );
-                        }
-                      },
+                          ),
+                        ),
+                      ],
                     );
                   }
-                  return SizedBox();
                 },
-              ),
-            ),
-          ),
-        ],
+              );
+            }
+            return SizedBox();
+          },
+        ),
       ),
     );
   }
@@ -235,10 +235,19 @@ Future<DataRow> proyekFileDataRow(
                   IconButton(
                       color: Colors.blue,
                       onPressed: () {
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => addProyek(
+                        //           id: proyek.id.toString(),
+                        //           isUpdate: true,
+                        //           proyek: proyek),
+                        //     ));
                         context.read<MenuAppController>().setSelectedItem(
                             'add proyek',
                             id: proyek.id.toString(),
-                            isUpdate: true);
+                            isUpdate: true,
+                            proyeks: proyek);
                       },
                       icon: Icon(Icons.edit_note_outlined)),
                   IconButton(

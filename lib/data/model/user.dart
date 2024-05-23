@@ -1,38 +1,38 @@
 import 'package:drawer/data/model/role.dart';
 
 class User {
-  final int id;
-  final String name;
-  final String nip;
-  final String email;
+  final int? id;
+  final String? name;
+  final String? nip;
+  final String? email;
   final DateTime? emailVerifiedAt;
-  final String username;
-  final String jenisKelamin;
-  final DateTime tanggalLahir;
-  final String noTelp;
-  final String alamat;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int roleId;
+  final String? username;
+  final String? jenisKelamin;
+  final DateTime? tanggalLahir;
+  final String? noTelp;
+  final String? alamat;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? roleId;
   final String? fotoProfile;
   final Role? role;
 
   User({
-    required this.id,
-    required this.name,
-    required this.nip,
-    required this.email,
-    required this.emailVerifiedAt,
-    required this.username,
-    required this.jenisKelamin,
-    required this.tanggalLahir,
-    required this.noTelp,
-    required this.alamat,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.roleId,
-    required this.fotoProfile,
-    required this.role,
+    this.id,
+    this.name,
+    this.nip,
+    this.email,
+    this.emailVerifiedAt,
+    this.username,
+    this.jenisKelamin,
+    this.tanggalLahir,
+    this.noTelp,
+    this.alamat,
+    this.createdAt,
+    this.updatedAt,
+    this.roleId,
+    this.fotoProfile,
+    this.role,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -66,11 +66,11 @@ class User {
     data['email_verified_at'] = emailVerifiedAt?.toIso8601String();
     data['username'] = username;
     data['jenis_kelamin'] = jenisKelamin;
-    data['tanggal_lahir'] = tanggalLahir.toIso8601String();
+    data['tanggal_lahir'] = tanggalLahir?.toIso8601String();
     data['no_telp'] = noTelp;
     data['alamat'] = alamat;
-    data['created_at'] = createdAt.toIso8601String();
-    data['updated_at'] = updatedAt.toIso8601String();
+    data['created_at'] = createdAt?.toIso8601String();
+    data['updated_at'] = updatedAt?.toIso8601String();
     data['role_id'] = roleId;
     data['foto_profile'] = fotoProfile;
     if (role != null) {

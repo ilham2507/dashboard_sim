@@ -1,5 +1,6 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/model/user.dart';
 import 'package:drawer/data/services/roles/role_bloc.dart';
 import 'package:drawer/data/services/roles/role_services.dart';
 import 'package:drawer/data/services/users/user_services.dart';
@@ -18,8 +19,9 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 class addKaryawan extends StatefulWidget {
   final String? id;
   final bool? isUpdate;
+  User? user;
 
-  addKaryawan({this.id, this.isUpdate, super.key});
+  addKaryawan({this.id, this.isUpdate, this.user, super.key});
 
   @override
   State<addKaryawan> createState() => _addKaryawanState();
@@ -55,6 +57,22 @@ class _addKaryawanState extends State<addKaryawan> {
       setState(() {
         tgl.text = tglnew;
       });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.isUpdate == true) {
+      nama.text = widget.user!.name!;
+      username.text = widget.user!.username!;
+      nip.text = widget.user!.nip!;
+      email.text = widget.user!.email!;
+      jk.text = widget.user!.jenisKelamin!;
+      notelp.text = widget.user!.noTelp!;
+      alamat.text = widget.user!.alamat!;
+      tgl.text = DateFormat('yyyy-MM-dd').format(widget.user!.tanggalLahir!);
     }
   }
 
@@ -105,244 +123,203 @@ class _addKaryawanState extends State<addKaryawan> {
     return Scaffold(
       drawer: SideMenu(),
       body: SafeArea(
-        child: BlocProvider(
-          create: (context) => UsersBloc(userService: UserService())
-            ..add(widget.isUpdate == true
-                ? GetUserById(userId: widget.id!)
-                : LoadUser()),
-          child: BlocBuilder<UsersBloc, UsersState>(
-            builder: (context, state) {
-              if (state is UsersLoading) {
-                return Center(child: CircularProgressIndicator());
-              } else if (state is UserByIdLoaded && widget.isUpdate == true) {
-                final user = state.user;
-                nama.text = user.name;
-                username.text = user.username;
-                nip.text = user.nip;
-                email.text = user.email;
-                jk.text = user.jenisKelamin;
-                tgl.text = DateFormat("yyyy-MM-dd").format(user.tanggalLahir);
-                notelp.text = user.noTelp;
-                alamat.text = user.alamat;
-                selectedRoleId = user.roleId.toString();
-              } else if (state is UsersError) {
-                return Center(child: Text('Error: ${state.error}'));
-              }
-
-              return SingleChildScrollView(
-                primary: false,
-                padding: EdgeInsets.all(defaultPadding),
-                child: Column(
-                  children: [
-                    Header(),
-                    SizedBox(height: defaultPadding),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Column(
-                            children: [
-                              SizedBox(height: defaultPadding),
-                              customform(controller: nama, title: "Nama"),
-                              customform(controller: nip, title: "Nip"),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Jabatan",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    BlocProvider(
-                                      create: (context) =>
-                                          RoleBloc(roleServices: RoleServices())
-                                            ..add(LoadRole()),
-                                      child: BlocBuilder<RoleBloc, RoleState>(
-                                        builder: (context, state) {
-                                          if (state is RoleLoading) {
-                                            return Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          } else if (state is RoleLoaded) {
-                                            final List<ValueItem<dynamic>>
-                                                dropdownOptions = state.roles
-                                                    .map((role) => ValueItem(
-                                                        label: role.name,
-                                                        value: role.id))
-                                                    .toList();
-                                            return MultiSelectDropDown(
-                                              borderColor: Colors.white,
-                                              fieldBackgroundColor: bgColor,
-                                              dropdownBackgroundColor:
-                                                  secondaryColor,
-                                              optionsBackgroundColor:
-                                                  secondaryColor,
-                                              controller: _controller,
-                                              onOptionSelected: (options) {
-                                                setState(() {
-                                                  selectedRoleId = options[0]
-                                                      .value
-                                                      .toString();
-                                                  print(selectedRoleId);
-                                                });
-                                                debugPrint(options.toString());
-                                              },
-                                              options: dropdownOptions,
-                                              maxItems: 1,
-                                              disabledOptions: const [
-                                                ValueItem(
-                                                    label: 'Option 1',
-                                                    value: '1')
-                                              ],
-                                              selectionType:
-                                                  SelectionType.single,
-                                              chipConfig: const ChipConfig(
-                                                  wrapType: WrapType.wrap),
-                                              optionTextStyle:
-                                                  const TextStyle(fontSize: 16),
-                                              selectedOptionIcon: const Icon(
-                                                  Icons.check_circle),
-                                            );
-                                          } else if (state is RoleError) {
-                                            return Center(
-                                                child: Text(
-                                                    'Error: ${state.error}'));
-                                          }
-                                          return SizedBox();
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                  ],
-                                ),
+          child: SingleChildScrollView(
+        primary: false,
+        padding: EdgeInsets.all(defaultPadding),
+        child: Column(
+          children: [
+            Header(),
+            SizedBox(height: defaultPadding),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    children: [
+                      SizedBox(height: defaultPadding),
+                      customform(controller: nama, title: "Nama"),
+                      customform(controller: nip, title: "Nip"),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Jabatan",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
-                              customform(controller: email, title: "Email"),
-                              customform(
-                                  controller: username, title: "Username"),
-                              customform(
-                                  controller: password, title: "Password"),
-                              customform(
-                                  controller: jk, title: "Jenis Kelamin"),
-                              customform(
-                                  onTap: () {
-                                    selectDate(context);
-                                  },
-                                  isReadOnly: true,
-                                  controller: tgl,
-                                  title: "Tanggal Lahir"),
-                              customform(controller: notelp, title: "No. Telp"),
-                              customform(controller: alamat, title: "Alamat"),
-                              if (Responsive.isMobile(context))
-                                SizedBox(height: defaultPadding),
-                              SizedBox(height: defaultPadding),
-                              Center(
-                                child: Container(
-                                  width: double.infinity,
-                                  child: ElevatedButton.icon(
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: defaultPadding * 1.5,
-                                        vertical: defaultPadding /
-                                            (Responsive.isMobile(context)
-                                                ? 2
-                                                : 1),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      storeUser();
-                                    },
-                                    icon: isLoading
-                                        ? CircularProgressIndicator(
-                                            color: Colors.white,
-                                          )
-                                        : Icon(Icons.save),
-                                    label: isLoading
-                                        ? Text("Menyimpan...")
-                                        : Text("Simpan"),
-                                  ),
-                                ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            BlocProvider(
+                              create: (context) =>
+                                  RoleBloc(roleServices: RoleServices())
+                                    ..add(LoadRole()),
+                              child: BlocBuilder<RoleBloc, RoleState>(
+                                builder: (context, state) {
+                                  if (state is RoleLoading) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else if (state is RoleLoaded) {
+                                    final List<ValueItem<dynamic>>
+                                        dropdownOptions = state.roles
+                                            .map((role) => ValueItem(
+                                                label: role.name,
+                                                value: role.id))
+                                            .toList();
+                                    return MultiSelectDropDown(
+                                      borderColor: Colors.white,
+                                      fieldBackgroundColor: bgColor,
+                                      dropdownBackgroundColor: secondaryColor,
+                                      optionsBackgroundColor: secondaryColor,
+                                      controller: _controller,
+                                      onOptionSelected: (options) {
+                                        setState(() {
+                                          selectedRoleId =
+                                              options[0].value.toString();
+                                          print(selectedRoleId);
+                                        });
+                                        debugPrint(options.toString());
+                                      },
+                                      options: dropdownOptions,
+                                      maxItems: 1,
+                                      disabledOptions: const [
+                                        ValueItem(label: 'Option 1', value: '1')
+                                      ],
+                                      selectionType: SelectionType.single,
+                                      chipConfig: const ChipConfig(
+                                          wrapType: WrapType.wrap),
+                                      optionTextStyle:
+                                          const TextStyle(fontSize: 16),
+                                      selectedOptionIcon:
+                                          const Icon(Icons.check_circle),
+                                    );
+                                  } else if (state is RoleError) {
+                                    return Center(
+                                        child: Text('Error: ${state.error}'));
+                                  }
+                                  return SizedBox();
+                                },
                               ),
-                            ],
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                          ],
+                        ),
+                      ),
+                      customform(controller: email, title: "Email"),
+                      customform(controller: username, title: "Username"),
+                      customform(controller: password, title: "Password"),
+                      customform(controller: jk, title: "Jenis Kelamin"),
+                      customform(
+                          onTap: () {
+                            selectDate(context);
+                          },
+                          isReadOnly: true,
+                          controller: tgl,
+                          title: "Tanggal Lahir"),
+                      customform(controller: notelp, title: "No. Telp"),
+                      customform(controller: alamat, title: "Alamat"),
+                      if (Responsive.isMobile(context))
+                        SizedBox(height: defaultPadding),
+                      SizedBox(height: defaultPadding),
+                      Center(
+                        child: Container(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: defaultPadding * 1.5,
+                                vertical: defaultPadding /
+                                    (Responsive.isMobile(context) ? 2 : 1),
+                              ),
+                            ),
+                            onPressed: () {
+                              storeUser();
+                            },
+                            icon: isLoading
+                                ? CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : Icon(Icons.save),
+                            label: isLoading
+                                ? Text("Menyimpan...")
+                                : Text("Simpan"),
                           ),
                         ),
-                        if (!Responsive.isMobile(context))
-                          SizedBox(width: defaultPadding),
-                        // if (!Responsive.isMobile(context))
-                        //   Expanded(
-                        //     flex: 2,
-                        //     child: Container(
-                        //       padding: EdgeInsets.all(defaultPadding),
-                        //       decoration: BoxDecoration(
-                        //         color: secondaryColor,
-                        //         borderRadius:
-                        //             const BorderRadius.all(Radius.circular(10)),
-                        //       ),
-                        //       child: Column(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Text(
-                        //             "Files",
-                        //             style: TextStyle(
-                        //               fontSize: 18,
-                        //               fontWeight: FontWeight.w500,
-                        //             ),
-                        //           ),
-                        //           SizedBox(height: defaultPadding),
-                        //           SizedBox(height: defaultPadding),
-                        //           Center(
-                        //             child: Container(
-                        //               width: double.infinity,
-                        //               child: ElevatedButton.icon(
-                        //                 style: TextButton.styleFrom(
-                        //                   padding: EdgeInsets.symmetric(
-                        //                     horizontal: defaultPadding * 1.5,
-                        //                     vertical: defaultPadding /
-                        //                         (Responsive.isMobile(context)
-                        //                             ? 2
-                        //                             : 1),
-                        //                   ),
-                        //                 ),
-                        //                 onPressed: () {
-                        //                   storeUser();
-                        //                 },
-                        //                 icon: isLoading
-                        //                     ? CircularProgressIndicator(
-                        //                         color: Colors.white,
-                        //                       )
-                        //                     : Icon(Icons.save),
-                        //                 label: isLoading
-                        //                     ? Text("Menyimpan...")
-                        //                     : Text("Simpan"),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            },
-          ),
+                if (!Responsive.isMobile(context))
+                  SizedBox(width: defaultPadding),
+                // if (!Responsive.isMobile(context))
+                //   Expanded(
+                //     flex: 2,
+                //     child: Container(
+                //       padding: EdgeInsets.all(defaultPadding),
+                //       decoration: BoxDecoration(
+                //         color: secondaryColor,
+                //         borderRadius:
+                //             const BorderRadius.all(Radius.circular(10)),
+                //       ),
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text(
+                //             "Files",
+                //             style: TextStyle(
+                //               fontSize: 18,
+                //               fontWeight: FontWeight.w500,
+                //             ),
+                //           ),
+                //           SizedBox(height: defaultPadding),
+                //           SizedBox(height: defaultPadding),
+                //           Center(
+                //             child: Container(
+                //               width: double.infinity,
+                //               child: ElevatedButton.icon(
+                //                 style: TextButton.styleFrom(
+                //                   padding: EdgeInsets.symmetric(
+                //                     horizontal: defaultPadding * 1.5,
+                //                     vertical: defaultPadding /
+                //                         (Responsive.isMobile(context)
+                //                             ? 2
+                //                             : 1),
+                //                   ),
+                //                 ),
+                //                 onPressed: () {
+                //                   storeUser();
+                //                 },
+                //                 icon: isLoading
+                //                     ? CircularProgressIndicator(
+                //                         color: Colors.white,
+                //                       )
+                //                     : Icon(Icons.save),
+                //                 label: isLoading
+                //                     ? Text("Menyimpan...")
+                //                     : Text("Simpan"),
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+              ],
+            ),
+          ],
         ),
-      ),
+      )),
     );
   }
 }

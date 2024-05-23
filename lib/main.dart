@@ -1,3 +1,5 @@
+import 'package:drawer/data/services/proyek/proyek_bloc.dart';
+import 'package:drawer/data/services/proyek/proyek_service.dart';
 import 'package:drawer/page/karyawan/karyawan.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,6 +32,9 @@ class MyApp extends StatelessWidget {
           create: (context) => MenuAppController(),
         ),
         BlocProvider(create: (context) => AuthenticationBloc()),
+        BlocProvider(
+          create: (context) => ProyekBloc(proyekServices: ProyekServices()),
+        ),
         // BlocProvider<UserBloc>(
         //   create: (context) => UserBloc(userService: UserService()),
         // ),

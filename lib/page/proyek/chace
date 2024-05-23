@@ -1,0 +1,375 @@
+import 'package:drawer/constants/constants.dart';
+import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/services/proyek/proyek_bloc.dart';
+import 'package:drawer/data/services/proyek/proyek_service.dart';
+import 'package:drawer/data/services/users/user_services.dart';
+import 'package:drawer/data/services/users/users_bloc.dart';
+import 'package:drawer/page/karyawan/widget/formkaryawan.dart';
+import 'package:drawer/page/proyek/proyek.dart';
+import 'package:drawer/page/proyek/widget/widget%20add%20proyek/file_proyek.dart';
+import 'package:drawer/page/proyek/widget/widget%20add%20proyek/filecard.dart';
+import 'package:drawer/page/proyek/widget/widget%20add%20proyek/formproyek.dart';
+import 'package:drawer/page/sidebar/header.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
+
+class addProyek extends StatefulWidget {
+  final String? id;
+  final bool? isUpdate;
+  addProyek({this.id, this.isUpdate, super.key});
+
+  @override
+  State<addProyek> createState() => _addProyekState();
+}
+
+class _addProyekState extends State<addProyek> {
+  final MultiSelectController _controller = MultiSelectController();
+
+  DateTime? selectedDate;
+  DateTime? selectedDate2;
+  List selectedUserId = [];
+  bool isLoading = false;
+
+  void selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1800),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
+  void selectDate2(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate2 ?? DateTime.now(),
+      firstDate: DateTime(1800),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null && pickedDate != selectedDate2) {
+      selectedDate2 = pickedDate;
+      print(selectedDate2);
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isUpdate == true) {
+      context.read<ProyekBloc>().add(GetProyekById(userId: widget.id ?? ""));
+    }
+  }
+
+  final nama = TextEditingController();
+  final detail = TextEditingController();
+  final manager = TextEditingController();
+  final nilai = TextEditingController();
+  final klien = TextEditingController();
+  void storeProyek() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String start = DateFormat('yyyy-MM-dd').format(selectedDate!);
+      String finish = DateFormat('yyyy-MM-dd').format(selectedDate2!);
+      print(finish);
+      Map<String, dynamic> userData = {
+        'nama': nama.text,
+        'detail': detail.text,
+        'manager': manager.text,
+        'nilai': nilai.text,
+        'start': start,
+        'finish': finish,
+        'klien': klien.text,
+      };
+
+      final proyekService = ProyekServices();
+      if (widget.isUpdate == false) {
+        await proyekService.storeProyek(userData);
+      } else {
+        await proyekService.updateProyekById(widget.id ?? "", userData);
+      }
+
+      Fluttertoast.showToast(
+          msg: widget.isUpdate == true
+              ? "Update proyek successfully"
+              : "Store proyek successfully",
+          toastLength: Toast.LENGTH_LONG);
+      // context.read<MenuAppController>().setSelectedItem('dashboard');
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Failed to save proyek: $e", toastLength: Toast.LENGTH_LONG);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+          child: BlocConsumer<ProyekBloc, ProyekState>(
+        listener: (context, state) {
+          if (state is ProyekStored) {
+            context.read<MenuAppController>().setSelectedItem('dashboard');
+          }
+        },
+        builder: (context, state) {
+          if (state is ProyekLoading) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is ProyekByIdLoaded && widget.isUpdate == true) {
+            final proyek = state.proyek;
+            nama.text = proyek.nama ?? "";
+            detail.text = proyek.detail ?? "";
+            manager.text = proyek.manager ?? "";
+            nilai.text = proyek.nilai.toString();
+            selectedDate = DateTime.parse(proyek.start!);
+            selectedDate2 = DateTime.parse(proyek.finish!);
+            klien.text = proyek.klien ?? "";
+            selectedUserId =
+                proyek.taskProyek!.map((task) => task.userId).toList();
+          } else if (state is ProyekError) {
+            return Center(child: Text('Error: ${state.error}'));
+          }
+          return SingleChildScrollView(
+            primary: false,
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              children: [
+                Header(),
+                SizedBox(height: defaultPadding),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        children: [
+                          SizedBox(height: defaultPadding),
+                          customformProyek(
+                            title: "Nama Proyek",
+                            controller: nama,
+                          ),
+                          customformProyek(
+                            title: "Klien",
+                            controller: klien,
+                          ),
+                          customformProyek(
+                            title: "Detail",
+                            controller: detail,
+                          ),
+                          customformProyek(
+                            title: "Nilai",
+                            controller: nilai,
+                          ),
+                          customformProyek(
+                            title: "Manager",
+                            controller: manager,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Start",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: selectedDate,
+                                    firstDate: DateTime(1800),
+                                    lastDate: DateTime(2300),
+                                  ).then(
+                                    (value) {
+                                      setState(() {
+                                        selectedDate = value;
+                                      });
+                                      print("selectDate : $selectedDate");
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  height: 50,
+                                  padding: EdgeInsets.only(left: 8),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 1, // Lebar border
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        14), // Radius border
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        selectedDate != null
+                                            ? DateFormat('yyyy-MM-dd')
+                                                .format(selectedDate!)
+                                            : "Select Date",
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Finish",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  selectDate2(context);
+                                },
+                                child: Container(
+                                  height: 50,
+                                  padding: EdgeInsets.only(left: 8),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 1, // Lebar border
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        14), // Radius border
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        selectedDate2 != null
+                                            ? DateFormat('yyyy-MM-dd')
+                                                .format(selectedDate!)
+                                            : "Select Date",
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                          if (Responsive.isMobile(context))
+                            SizedBox(height: defaultPadding),
+                          if (Responsive.isMobile(context)) fileproyek(),
+                        ],
+                      ),
+                    ),
+                    if (!Responsive.isMobile(context))
+                      SizedBox(width: defaultPadding),
+                    if (!Responsive.isMobile(context))
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          padding: EdgeInsets.all(defaultPadding),
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Files",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: defaultPadding),
+                              fileCardProyek(
+                                svgSrc: "assets/icons/media.svg",
+                                jabatan: "manager",
+                              ),
+                              fileCardProyek(
+                                svgSrc: "assets/icons/media.svg",
+                                jabatan: "manager",
+                              ),
+                              SizedBox(height: defaultPadding),
+                              Center(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: ElevatedButton.icon(
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: defaultPadding * 1.5,
+                                        vertical: defaultPadding /
+                                            (Responsive.isMobile(context)
+                                                ? 2
+                                                : 1),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      storeProyek();
+                                    },
+                                    icon: isLoading
+                                        ? CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                        : Icon(Icons.save),
+                                    label: isLoading
+                                        ? Text("Menyimpan...")
+                                        : Text("Simpan"),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      )),
+    );
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
 import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,9 +31,11 @@ class topjudulkaryawan extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                context
-                    .read<MenuAppController>()
-                    .setSelectedItem('add karyawan', isUpdate: false, id: "");
+                context.read<MenuAppController>().setSelectedItem(
+                    'add karyawan',
+                    isUpdate: false,
+                    id: "",
+                    users: User());
               },
               icon: Icon(Icons.add),
               label: Text("Add New"),

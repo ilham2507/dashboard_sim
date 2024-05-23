@@ -133,7 +133,8 @@ class imageProfile extends StatelessWidget {
                       context.read<MenuAppController>().setSelectedItem(
                           'add karyawan',
                           id: user.id.toString(),
-                          isUpdate: true);
+                          isUpdate: true,
+                          users: user);
                     },
                   ),
                 ],
@@ -189,15 +190,15 @@ Widget detailProfile(String id) {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  profileData("Nama", user.name),
-                  profileData("Nip", user.nip),
-                  profileData("Email", user.email),
-                  profileData("Username", user.username),
-                  profileData("Jenis Kelamin", user.jenisKelamin),
+                  profileData("Nama", user.name!),
+                  profileData("Nip", user.nip!),
+                  profileData("Email", user.email!),
+                  profileData("Username", user.username!),
+                  profileData("Jenis Kelamin", user.jenisKelamin!),
                   profileData("Tanggal Lahir",
-                      DateFormat('dddd MMMM yyyy').format(user.tanggalLahir)),
-                  profileData("No. Telepon", user.noTelp),
-                  profileData("Alamat", user.alamat),
+                      DateFormat('dddd MMMM yyyy').format(user.tanggalLahir!)),
+                  profileData("No. Telepon", user.noTelp!),
+                  profileData("Alamat", user.alamat!),
                   profileData("Role", user.role!.name),
                 ],
               ),

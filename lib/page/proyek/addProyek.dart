@@ -1,6 +1,7 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
 import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/model/proyek.dart';
 import 'package:drawer/data/services/proyek/proyek_bloc.dart';
 import 'package:drawer/data/services/proyek/proyek_service.dart';
 import 'package:drawer/data/services/users/user_services.dart';
@@ -11,6 +12,7 @@ import 'package:drawer/page/proyek/widget/widget%20add%20proyek/file_proyek.dart
 import 'package:drawer/page/proyek/widget/widget%20add%20proyek/filecard.dart';
 import 'package:drawer/page/proyek/widget/widget%20add%20proyek/formproyek.dart';
 import 'package:drawer/page/sidebar/header.dart';
+import 'package:drawer/page/sidebar/side_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -22,30 +24,29 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 class addProyek extends StatefulWidget {
   final String? id;
   final bool? isUpdate;
-  addProyek({this.id, this.isUpdate, super.key});
+  Proyek? proyek;
+  addProyek({this.id, this.isUpdate, this.proyek, super.key});
 
   @override
   State<addProyek> createState() => _addProyekState();
 }
 
 class _addProyekState extends State<addProyek> {
-  final MultiSelectController _controller = MultiSelectController();
 
-  DateTime? selectedDate;
-  DateTime? selectedDate2;
   List selectedUserId = [];
   bool isLoading = false;
 
   void selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: selectedDate ?? DateTime.now(),
+      initialDate: DateTime.now(),
       firstDate: DateTime(1800),
       lastDate: DateTime(2100),
     );
-    if (pickedDate != null && pickedDate != selectedDate) {
+    if (pickedDate != null) {
       setState(() {
-        selectedDate = pickedDate;
+        String startText = DateFormat("yyyy-MM-dd").format(pickedDate);
+        start.text = startText;
       });
     }
   }
@@ -53,14 +54,14 @@ class _addProyekState extends State<addProyek> {
   void selectDate2(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: selectedDate2 ?? DateTime.now(),
+      initialDate: DateTime.now(),
       firstDate: DateTime(1800),
       lastDate: DateTime(2100),
     );
-    if (pickedDate != null && pickedDate != selectedDate2) {
+    if (pickedDate != null) {
       setState(() {
-        selectedDate2 = pickedDate;
-        print(selectedDate2);
+        String finishText = DateFormat("yyyy-MM-dd").format(pickedDate);
+        finish.text = finishText;
       });
     }
   }
@@ -70,21 +71,35 @@ class _addProyekState extends State<addProyek> {
   final manager = TextEditingController();
   final nilai = TextEditingController();
   final klien = TextEditingController();
+  final start = TextEditingController();
+  final finish = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isUpdate == true) {
+      nama.text = widget.proyek!.nama!;
+      detail.text = widget.proyek!.detail!;
+      manager.text = widget.proyek!.manager!;
+      nilai.text = widget.proyek!.nilai!.toString();
+      klien.text = widget.proyek!.klien!;
+      start.text = widget.proyek!.start!;
+      finish.text = widget.proyek!.finish!;
+    }
+  }
+
   void storeProyek() async {
     setState(() {
       isLoading = true;
     });
     try {
-      String start = DateFormat('yyyy-MM-dd').format(selectedDate!);
-      String finish = DateFormat('yyyy-MM-dd').format(selectedDate2!);
-      print(finish);
       Map<String, dynamic> userData = {
         'nama': nama.text,
         'detail': detail.text,
         'manager': manager.text,
         'nilai': nilai.text,
-        'start': start,
-        'finish': finish,
+        'start': start.text,
+        'finish': finish.text,
         'klien': klien.text,
       };
 
@@ -114,246 +129,129 @@ class _addProyekState extends State<addProyek> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(),
       body: SafeArea(
-          child: BlocProvider(
-        create: (context) => ProyekBloc(proyekServices: ProyekServices())
-          ..add(widget.isUpdate == true
-              ? GetProyekById(userId: widget.id ?? "")
-              : LoadProyek()),
-        child: BlocBuilder<ProyekBloc, ProyekState>(
-          builder: (context, state) {
-            if (state is ProyekLoading) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is ProyekByIdLoaded && widget.isUpdate == true) {
-              final proyek = state.proyek;
-              nama.text = proyek.nama ?? "";
-              detail.text = proyek.detail ?? "";
-              manager.text = proyek.manager ?? "";
-              nilai.text = proyek.nilai.toString();
-              selectedDate = DateTime.parse(proyek.start!);
-              selectedDate2 = DateTime.parse(proyek.finish!);
-              klien.text = proyek.klien ?? "";
-              selectedUserId =
-                  proyek.taskProyek!.map((task) => task.userId).toList();
-            } else if (state is ProyekError) {
-              return Center(child: Text('Error: ${state.error}'));
-            }
-            return SingleChildScrollView(
-              primary: false,
-              padding: EdgeInsets.all(defaultPadding),
-              child: Column(
-                children: [
-                  Header(),
-                  SizedBox(height: defaultPadding),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          child: SingleChildScrollView(
+        primary: false,
+        padding: EdgeInsets.all(defaultPadding),
+        child: Column(
+          children: [
+            Header(),
+            SizedBox(height: defaultPadding),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Column(
                     children: [
-                      Expanded(
-                        flex: 5,
-                        child: Column(
-                          children: [
-                            SizedBox(height: defaultPadding),
-                            customformProyek(
-                              title: "Nama Proyek",
-                              controller: nama,
-                            ),
-                            customformProyek(
-                              title: "Klien",
-                              controller: klien,
-                            ),
-                            customformProyek(
-                              title: "Detail",
-                              controller: detail,
-                            ),
-                            customformProyek(
-                              title: "Nilai",
-                              controller: nilai,
-                            ),
-                            customformProyek(
-                              title: "Manager",
-                              controller: manager,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Start",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    selectDate(context);
-                                  },
-                                  child: Container(
-                                    height: 50,
-                                    padding: EdgeInsets.only(left: 8),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 1, // Lebar border
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                          14), // Radius border
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          selectedDate != null
-                                              ? DateFormat('yyyy-MM-dd')
-                                                  .format(selectedDate!)
-                                              : "Select Date",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Finish",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    selectDate2(context);
-                                  },
-                                  child: Container(
-                                    height: 50,
-                                    padding: EdgeInsets.only(left: 8),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 1, // Lebar border
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                          14), // Radius border
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          selectedDate2 != null
-                                              ? DateFormat('yyyy-MM-dd')
-                                                  .format(selectedDate!)
-                                              : "Select Date",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                              ],
-                            ),
-                            if (Responsive.isMobile(context))
-                              SizedBox(height: defaultPadding),
-                            if (Responsive.isMobile(context)) fileproyek(),
-                          ],
-                        ),
+                      const SizedBox(height: defaultPadding),
+                      customformProyek(
+                        title: "Nama Proyek",
+                        controller: nama,
                       ),
-                      if (!Responsive.isMobile(context))
-                        SizedBox(width: defaultPadding),
-                      if (!Responsive.isMobile(context))
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.all(defaultPadding),
-                            decoration: BoxDecoration(
-                              color: secondaryColor,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Files",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                SizedBox(height: defaultPadding),
-                                fileCardProyek(
-                                  svgSrc: "assets/icons/media.svg",
-                                  jabatan: "manager",
-                                ),
-                                fileCardProyek(
-                                  svgSrc: "assets/icons/media.svg",
-                                  jabatan: "manager",
-                                ),
-                                SizedBox(height: defaultPadding),
-                                Center(
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: ElevatedButton.icon(
-                                      style: TextButton.styleFrom(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: defaultPadding * 1.5,
-                                          vertical: defaultPadding /
-                                              (Responsive.isMobile(context)
-                                                  ? 2
-                                                  : 1),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        storeProyek();
-                                      },
-                                      icon: isLoading
-                                          ? CircularProgressIndicator(
-                                              color: Colors.white,
-                                            )
-                                          : Icon(Icons.save),
-                                      label: isLoading
-                                          ? Text("Menyimpan...")
-                                          : Text("Simpan"),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                      customformProyek(
+                        title: "Klien",
+                        controller: klien,
+                      ),
+                      customformProyek(
+                        title: "Detail",
+                        controller: detail,
+                      ),
+                      customformProyek(
+                        title: "Nilai",
+                        controller: nilai,
+                      ),
+                      customformProyek(
+                        title: "Manager",
+                        controller: manager,
+                      ),
+                      customform(
+                        title: "Start",
+                        controller: start,
+                        isReadOnly: true,
+                        onTap: () {
+                          selectDate(context);
+                        },
+                      ),
+                      customform(
+                        title: "Finish",
+                        controller: finish,
+                        isReadOnly: true,
+                        onTap: () {
+                          selectDate2(context);
+                        },
+                      ),
+                      if (Responsive.isMobile(context))
+                        SizedBox(height: defaultPadding),
+                      if (Responsive.isMobile(context)) fileproyek(),
+                    ],
+                  ),
+                ),
+                if (!Responsive.isMobile(context))
+                  SizedBox(width: defaultPadding),
+                if (!Responsive.isMobile(context))
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: EdgeInsets.all(defaultPadding),
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Files",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
+                          SizedBox(height: defaultPadding),
+                          fileCardProyek(
+                            svgSrc: "assets/icons/media.svg",
+                            jabatan: "manager",
+                          ),
+                          fileCardProyek(
+                            svgSrc: "assets/icons/media.svg",
+                            jabatan: "manager",
+                          ),
+                          SizedBox(height: defaultPadding),
+                          Center(
+                            child: Container(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: defaultPadding * 1.5,
+                                    vertical: defaultPadding /
+                                        (Responsive.isMobile(context) ? 2 : 1),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  storeProyek();
+                                },
+                                icon: isLoading
+                                    ? CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : Icon(Icons.save),
+                                label: isLoading
+                                    ? Text("Menyimpan...")
+                                    : Text("Simpan"),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            )
+          ],
         ),
       )),
     );

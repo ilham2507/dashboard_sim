@@ -19,6 +19,9 @@ class MainScreen extends StatelessWidget {
     final selectedItem = context.watch<MenuAppController>().selectedItem;
     final selectedItemId = context.watch<MenuAppController>().selectedItemId;
     final selectedItemUpdate = context.watch<MenuAppController>().isUpdateItem;
+    final selectedItemProyek = context.watch<MenuAppController>().proyek;
+    final selectedItemUser = context.watch<MenuAppController>().user;
+    final selectedItemTask = context.watch<MenuAppController>().task;
     Widget? selectedPage;
 
     if (selectedItem == 'dashboard') {
@@ -29,22 +32,28 @@ class MainScreen extends StatelessWidget {
       selectedPage = const karyawan();
     } else if (selectedItem == 'add karyawan' &&
         selectedItemId != null &&
-        selectedItemUpdate != null) {
+        selectedItemUpdate != null &&
+        selectedItemUser != null) {
       selectedPage = addKaryawan(
         id: selectedItemId,
         isUpdate: selectedItemUpdate,
+        user: selectedItemUser,
       );
     } else if (selectedItem == 'add proyek' &&
         selectedItemId != null &&
-        selectedItemUpdate != null) {
+        selectedItemUpdate != null &&
+        selectedItemProyek != null) {
       selectedPage = addProyek(
         id: selectedItemId,
         isUpdate: selectedItemUpdate,
+        proyek: selectedItemProyek,
       );
     } else if (selectedItem == 'detail karyawan' && selectedItemId != null) {
       selectedPage = detailKaryawan(idUser: selectedItemId);
     } else if (selectedItem == 'detail proyek' && selectedItemId != null) {
-      selectedPage = detailProyek(id: selectedItemId);
+      selectedPage = detailProyek(
+        id: selectedItemId,
+      );
     }
 
     return Scaffold(

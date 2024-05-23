@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class tabelTaskProyek extends StatelessWidget {
   String? id;
+
   tabelTaskProyek({
     this.id,
     Key? key,
@@ -65,6 +66,7 @@ class tabelTaskProyek extends StatelessWidget {
                               return add_task(
                                 id: id ?? "",
                                 isUpdate: false,
+                                taskProyek: TaskProyek(),
                               );
                             },
                           );
@@ -162,6 +164,7 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task, String id) {
                   id: task.id.toString(),
                   isUpdate: true,
                   idTask: id,
+                  taskProyek: task,
                 );
               },
             );
@@ -183,6 +186,7 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task, String id) {
                   id: task.id.toString(),
                   isUpdate: true,
                   idTask: id,
+                  taskProyek: task,
                 );
               },
             );
@@ -203,6 +207,7 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task, String id) {
                 return add_task(
                   id: task.id.toString(),
                   idTask: id,
+                  taskProyek: task,
                   isUpdate: true,
                 );
               },
@@ -226,6 +231,7 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task, String id) {
                 return add_task(
                   id: task.id.toString(),
                   idTask: id,
+                  taskProyek: task,
                   isUpdate: true,
                 );
               },
@@ -247,6 +253,7 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task, String id) {
                 return add_task(
                   id: task.id.toString(),
                   idTask: id,
+                  taskProyek: task,
                   isUpdate: true,
                 );
               },
@@ -268,6 +275,7 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task, String id) {
                 return add_task(
                   id: task.id.toString(),
                   idTask: id,
+                  taskProyek: task,
                   isUpdate: true,
                 );
               },
@@ -289,6 +297,7 @@ DataRow recentTaskDataRow(BuildContext context, TaskProyek task, String id) {
                 return add_task(
                   id: task.id.toString(),
                   idTask: id,
+                  taskProyek: task,
                   isUpdate: true,
                 );
               },

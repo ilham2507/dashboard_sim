@@ -1,3 +1,6 @@
+import 'package:drawer/data/model/proyek.dart';
+import 'package:drawer/data/model/task_proyek.dart';
+import 'package:drawer/data/model/user.dart';
 import 'package:flutter/material.dart';
 
 class MenuAppController extends ChangeNotifier {
@@ -5,6 +8,9 @@ class MenuAppController extends ChangeNotifier {
 
   String selectedItem = 'dashboard';
   String? selectedItemId;
+  Proyek? proyek;
+  User? user;
+  TaskProyek? task;
   bool? isUpdateItem;
 
   GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
@@ -15,10 +21,18 @@ class MenuAppController extends ChangeNotifier {
     }
   }
 
-  void setSelectedItem(String item, {String? id, bool? isUpdate}) {
+  void setSelectedItem(String item,
+      {String? id,
+      bool? isUpdate,
+      Proyek? proyeks,
+      User? users,
+      TaskProyek? tasks}) {
     selectedItem = item;
     selectedItemId = id;
     isUpdateItem = isUpdate;
+    proyek = proyeks;
+    user = users;
+    task = tasks;
     notifyListeners();
   }
 }

@@ -1,7 +1,9 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
+import 'package:drawer/data/model/task_proyek.dart';
 import 'package:drawer/data/services/proyek/proyek_bloc.dart';
 import 'package:drawer/data/services/proyek/proyek_service.dart';
+import 'package:drawer/page/proyek/proyek.dart';
 import 'package:drawer/page/proyek/widget/widget%20detail%20proyek/filecarddetail.dart';
 import 'package:drawer/page/proyek/widget/widget%20detail%20proyek/tabel_task_proyek.dart';
 import 'package:drawer/page/sidebar/header.dart';

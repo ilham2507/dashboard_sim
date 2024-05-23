@@ -1,13 +1,17 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
 import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/model/proyek.dart';
+import 'package:drawer/page/proyek/proyek.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class topjudulproyek extends StatelessWidget {
-  const topjudulproyek({
+  // Proyek? proyek;
+  topjudulproyek({
     Key? key,
+    // this.proyek,
   }) : super(key: key);
 
   @override
@@ -22,7 +26,6 @@ class topjudulproyek extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         } else {
           final roleId = snapshot.data!;
-
           return Column(
             children: [
               Row(
@@ -45,7 +48,21 @@ class topjudulproyek extends StatelessWidget {
                         context.read<MenuAppController>().setSelectedItem(
                             'add proyek',
                             id: "",
-                            isUpdate: false);
+                            isUpdate: false,
+                            proyeks: Proyek(
+                                id: 0,
+                                userId: 0,
+                                nama: "",
+                                detail: "",
+                                manager: "",
+                                file: "",
+                                start: "",
+                                finish: "",
+                                createdAt: "",
+                                nilai: 0,
+                                klien: "",
+                                updatedAt: "",
+                                taskProyek: []));
                       },
                       icon: Icon(Icons.add),
                       label: Text("Add New"),

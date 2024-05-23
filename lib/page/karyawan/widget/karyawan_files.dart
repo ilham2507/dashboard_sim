@@ -110,7 +110,7 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
           },
           child: Container(
             width: 100,
-            child: (Text(user.name)),
+            child: (Text(user.name!)),
           ),
         ),
       ),
@@ -136,7 +136,7 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
           },
           child: Container(
             width: 130,
-            child: Text(DateFormat('dd MMMM yyyy').format(user.tanggalLahir)),
+            child: Text(DateFormat('dd MMMM yyyy').format(user.tanggalLahir!)),
           ),
         ),
       ),
@@ -149,7 +149,7 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
           },
           child: Container(
             width: 130,
-            child: Text(user.noTelp),
+            child: Text(user.noTelp!),
           ),
         ),
       ),
@@ -162,7 +162,7 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
           },
           child: Container(
             width: 250,
-            child: Text(user.email),
+            child: Text(user.email!),
           ),
         ),
       ),
@@ -175,7 +175,7 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
           },
           child: Container(
             width: 100,
-            child: Text(user.jenisKelamin),
+            child: Text(user.jenisKelamin!),
           ),
         ),
       ),
@@ -188,7 +188,7 @@ DataRow karyawanFileDataRow(BuildContext context, User user, int id) {
           },
           child: Container(
             width: 100,
-            child: Text(user.alamat),
+            child: Text(user.alamat!),
           ),
         ),
       ),
