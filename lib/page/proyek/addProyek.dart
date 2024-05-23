@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/constants/responsive.dart';
 import 'package:drawer/controller/MenuAppController.dart';
@@ -32,7 +34,6 @@ class addProyek extends StatefulWidget {
 }
 
 class _addProyekState extends State<addProyek> {
-
   List selectedUserId = [];
   bool isLoading = false;
 
@@ -66,9 +67,11 @@ class _addProyekState extends State<addProyek> {
     }
   }
 
+  String selectedManager = '';
+  final MultiSelectController _controller = MultiSelectController();
+
   final nama = TextEditingController();
   final detail = TextEditingController();
-  final manager = TextEditingController();
   final nilai = TextEditingController();
   final klien = TextEditingController();
   final start = TextEditingController();
@@ -80,7 +83,7 @@ class _addProyekState extends State<addProyek> {
     if (widget.isUpdate == true) {
       nama.text = widget.proyek!.nama!;
       detail.text = widget.proyek!.detail!;
-      manager.text = widget.proyek!.manager!;
+      selectedManager = widget.proyek!.manager!;
       nilai.text = widget.proyek!.nilai!.toString();
       klien.text = widget.proyek!.klien!;
       start.text = widget.proyek!.start!;
@@ -96,7 +99,7 @@ class _addProyekState extends State<addProyek> {
       Map<String, dynamic> userData = {
         'nama': nama.text,
         'detail': detail.text,
-        'manager': manager.text,
+        'manager': selectedManager,
         'nilai': nilai.text,
         'start': start.text,
         'finish': finish.text,
@@ -161,10 +164,77 @@ class _addProyekState extends State<addProyek> {
                       customformProyek(
                         title: "Nilai",
                         controller: nilai,
+                        keyboardType: TextInputType.number,
                       ),
-                      customformProyek(
-                        title: "Manager",
-                        controller: manager,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Jabatan",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          BlocProvider(
+                            create: (context) =>
+                                UsersBloc(userService: UserService())
+                                  ..add(LoadUserManager()),
+                            child: BlocBuilder<UsersBloc, UsersState>(
+                              builder: (context, state) {
+                                if (state is UsersLoading) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (state is UsersLoaded) {
+                                  final List<ValueItem<dynamic>>
+                                      dropdownOptions = state.users
+                                          .map((user) => ValueItem(
+                                              label: user.name!,
+                                              value: user.name))
+                                          .toList();
+                                  return MultiSelectDropDown(
+                                    borderColor: Colors.white,
+                                    fieldBackgroundColor: bgColor,
+                                    dropdownBackgroundColor: secondaryColor,
+                                    optionsBackgroundColor: secondaryColor,
+                                    controller: _controller,
+                                    onOptionSelected: (options) {
+                                      setState(() {
+                                        selectedManager =
+                                            options[0].value.toString();
+                                        print(selectedManager);
+                                      });
+                                      debugPrint(options.toString());
+                                    },
+                                    options: dropdownOptions,
+                                    maxItems: 1,
+                                    disabledOptions: const [
+                                      ValueItem(label: 'Option 1', value: '1')
+                                    ],
+                                    selectionType: SelectionType.single,
+                                    chipConfig: const ChipConfig(
+                                        wrapType: WrapType.wrap),
+                                    optionTextStyle:
+                                        const TextStyle(fontSize: 16),
+                                    selectedOptionIcon:
+                                        const Icon(Icons.check_circle),
+                                  );
+                                } else if (state is UsersError) {
+                                  return Center(
+                                      child: Text('Error: ${state.error}'));
+                                }
+                                return SizedBox();
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                        ],
                       ),
                       customform(
                         title: "Start",

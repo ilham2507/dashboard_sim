@@ -46,12 +46,14 @@ class _add_taskState extends State<add_task> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    tugas.text = widget.taskProyek!.tugas!;
-    catatan.text = widget.taskProyek!.catatan!;
-    start.text = widget.taskProyek!.start!;
-    deadline.text = widget.taskProyek!.deadline!;
-    status.text = widget.taskProyek!.status!;
-    nilai.text = widget.taskProyek!.nilai!.toString();
+    if (widget.isUpdate == true) {
+      tugas.text = widget.taskProyek!.tugas!;
+      catatan.text = widget.taskProyek!.catatan!;
+      start.text = widget.taskProyek!.start!;
+      deadline.text = widget.taskProyek!.deadline!;
+      status.text = widget.taskProyek!.status!;
+      nilai.text = widget.taskProyek!.nilai!.toString();
+    }
   }
 
   void selectDate(BuildContext context) async {
@@ -99,6 +101,7 @@ class _add_taskState extends State<add_task> {
         'user_ids': selectedUserId,
         'proyek_id': widget.idTask,
       };
+      print(userData);
       final taskServices = TaskService();
       if (widget.isUpdate == false) {
         await taskServices.storeTask(userData);

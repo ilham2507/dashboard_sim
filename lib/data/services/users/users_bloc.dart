@@ -20,6 +20,16 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       }
     });
 
+    on<LoadUserManager>((event, emit) async {
+      emit(UsersLoading());
+      try {
+        final result = await userService.getUsersManager();
+        emit(UsersLoaded(result));
+      } catch (e) {
+        emit(UsersError(e.toString()));
+      }
+    });
+
     on<StoreUser>((event, emit) async {
       emit(UsersStoring());
       try {

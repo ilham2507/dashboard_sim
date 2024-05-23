@@ -64,9 +64,10 @@ class tabelTaskProyek extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return add_task(
-                                id: id ?? "",
+                                idTask: id ?? "",
                                 isUpdate: false,
                                 taskProyek: TaskProyek(),
+                                id: id ?? "",
                               );
                             },
                           );

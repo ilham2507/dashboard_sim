@@ -5,6 +5,8 @@ sealed class UsersEvent {}
 
 class LoadUser extends UsersEvent {}
 
+class LoadUserManager extends UsersEvent {}
+
 class StoreUser extends UsersEvent {
   final Map<String, dynamic> userData;
 
