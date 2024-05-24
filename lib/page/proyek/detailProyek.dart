@@ -143,29 +143,69 @@ class detailProyek extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        // Wrap(
-                                        //   children: [
-                                        //     Text(
-                                        //       "Team : ",
-                                        //       style: TextStyle(
-                                        //         fontWeight: FontWeight.bold,
-                                        //       ),
-                                        //     ),
-                                        //     Column(
-                                        //       crossAxisAlignment:
-                                        //           CrossAxisAlignment.start,
-                                        //       children: proyek.taskProyek !=
-                                        //               null
-                                        //           ? proyek.taskProyek!
-                                        //               .map((task) {
-                                        //               return Text(
-                                        //                   task.user?.name ??
-                                        //                       "Unknown");
-                                        //             }).toList()
-                                        //           : [Text("No team members")],
-                                        //     ),
-                                        //   ],
-                                        // ),
+                                        Wrap(
+                                          children: [
+                                            Text(
+                                              "Created by: ${proyek.user?.name ?? "Unknown"}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Wrap(
+                                          children: [
+                                            Text(
+                                              "Team : ",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            proyek.taskProyek != null &&
+                                                    proyek
+                                                        .taskProyek!.isNotEmpty
+                                                ? Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: proyek.taskProyek!
+                                                        .map((task) {
+                                                      return Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: task
+                                                            .penerimaProyek!
+                                                            .map((penerima) {
+                                                          return Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                penerima.user
+                                                                        ?.name ??
+                                                                    "No Name",
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                " - ${task.tugas}" ??
+                                                                    " - No Task",
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }).toList(),
+                                                      );
+                                                    }).toList(),
+                                                  )
+                                                : const Text("No team members"),
+                                          ],
+                                        )
                                       ],
                                     ),
                                   );

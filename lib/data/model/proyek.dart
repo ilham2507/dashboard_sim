@@ -1,3 +1,5 @@
+import 'package:drawer/data/model/user.dart';
+
 import 'task_proyek.dart';
 
 class Proyek {
@@ -13,6 +15,7 @@ class Proyek {
   String? klien;
   String? createdAt;
   String? updatedAt;
+  User? user;
   List<TaskProyek>? taskProyek;
 
   Proyek({
@@ -28,6 +31,7 @@ class Proyek {
     this.klien,
     this.createdAt,
     this.updatedAt,
+    this.user,
     this.taskProyek,
   });
 
@@ -45,6 +49,7 @@ class Proyek {
       klien: json['klien'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
       taskProyek: json['task_proyek'] != null
           ? (json['task_proyek'] as List)
               .map((v) => TaskProyek.fromJson(v))
@@ -67,6 +72,9 @@ class Proyek {
     data['klien'] = klien;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    if (user != null) {
+      data['user'] = user!.toJson();
+    }
     if (taskProyek != null) {
       data['task_proyek'] = taskProyek!.map((v) => v.toJson()).toList();
     }

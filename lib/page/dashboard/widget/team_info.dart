@@ -1,17 +1,15 @@
 import 'package:drawer/constants/constants.dart';
+import 'package:drawer/data/model/proyek.dart';
+import 'package:drawer/page/proyek/proyek.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class teamInfo extends StatelessWidget {
-  const teamInfo({
-    Key? key,
-    required this.title,
-    required this.svgSrc,
-    required this.jabatan,
-  }) : super(key: key);
+  teamInfo({Key? key, required this.svgSrc, this.proyek}) : super(key: key);
 
-  final String title, svgSrc, jabatan;
+  final String svgSrc;
+  Proyek? proyek;
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +36,12 @@ class teamInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    proyek!.manager!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    jabatan,
+                    "manager",
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall!

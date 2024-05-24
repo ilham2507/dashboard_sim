@@ -32,10 +32,12 @@ class AuthenticationBloc
         final jsonResponse = jsonDecode(response.body);
         final token = jsonResponse['token'];
         final roleId = jsonResponse['data']['role_id'];
+        final nama = jsonResponse['data']['name'];
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         await prefs.setInt('role_id', roleId);
+        await prefs.setString('name', nama);
 
         print("token : $token");
         print("role : $roleId");
