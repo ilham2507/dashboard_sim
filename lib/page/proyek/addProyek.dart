@@ -72,7 +72,7 @@ class _addProyekState extends State<addProyek> {
 
   final nama = TextEditingController();
   final detail = TextEditingController();
-  final nilai = TextEditingController();
+  // final nilai = TextEditingController();
   final klien = TextEditingController();
   final start = TextEditingController();
   final finish = TextEditingController();
@@ -84,7 +84,7 @@ class _addProyekState extends State<addProyek> {
       nama.text = widget.proyek!.nama!;
       detail.text = widget.proyek!.detail!;
       selectedManager = widget.proyek!.manager!;
-      nilai.text = widget.proyek!.nilai!.toString();
+      // nilai.text = widget.proyek!.nilai!.toString();
       klien.text = widget.proyek!.klien!;
       start.text = widget.proyek!.start!;
       finish.text = widget.proyek!.finish!;
@@ -100,7 +100,7 @@ class _addProyekState extends State<addProyek> {
         'nama': nama.text,
         'detail': detail.text,
         'manager': selectedManager,
-        'nilai': nilai.text,
+        // 'nilai': nilai.text,
         'start': start.text,
         'finish': finish.text,
         'klien': klien.text,
@@ -161,16 +161,11 @@ class _addProyekState extends State<addProyek> {
                         title: "Detail",
                         controller: detail,
                       ),
-                      customformProyek(
-                        title: "Nilai",
-                        controller: nilai,
-                        keyboardType: TextInputType.number,
-                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Jabatan",
+                            "Manager",
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

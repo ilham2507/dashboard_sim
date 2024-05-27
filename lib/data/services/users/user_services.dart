@@ -121,6 +121,34 @@ class UserService {
     }
   }
 
+  Future<User> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) {
+      throw Exception('Token not found in SharedPreferences');
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiServices.baseUrl}/user-data'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body)['user'];
+        print(responseData);
+        return User.fromJson(responseData);
+      } else {
+        throw Exception('Failed to load user: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load user: $e');
+    }
+  }
+
   Future<void> updateUserById(
       String userId, Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();

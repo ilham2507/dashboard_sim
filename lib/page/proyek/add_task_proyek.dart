@@ -31,9 +31,11 @@ class add_task extends StatefulWidget {
 
 class _add_taskState extends State<add_task> {
   final MultiSelectController _controller = MultiSelectController();
+  final MultiSelectController _controller1 = MultiSelectController();
 
   List selectedUserId = [];
   bool isLoading = false;
+  String selectedStatus = "";
 
   final tugas = TextEditingController();
   final catatan = TextEditingController();
@@ -96,7 +98,7 @@ class _add_taskState extends State<add_task> {
         'catatan': catatan.text,
         'start': start.text,
         'deadline': deadline.text,
-        'status': status.text,
+        'status': selectedStatus,
         'nilai': nilai.text,
         'user_ids': selectedUserId,
         'proyek_id': widget.idTask,
@@ -128,6 +130,11 @@ class _add_taskState extends State<add_task> {
 
   @override
   Widget build(BuildContext context) {
+    final List<ValueItem> options = [
+      ValueItem(label: 'Selesai', value: 'selesai'),
+      ValueItem(label: 'Progress', value: 'progress'),
+    ];
+
     return AlertDialog(
       scrollable: true,
       title: const Text("Tambah Tugas"),
@@ -184,7 +191,7 @@ class _add_taskState extends State<add_task> {
                               fieldBackgroundColor: bgColor,
                               dropdownBackgroundColor: secondaryColor,
                               optionsBackgroundColor: secondaryColor,
-                              controller: _controller,
+                              controller: _controller1,
                               onOptionSelected: (options) {
                                 setState(() {
                                   selectedUserId = options
@@ -232,9 +239,52 @@ class _add_taskState extends State<add_task> {
                   selectDate2(context);
                 },
               ),
-              customformProyek(
-                title: "Status",
-                controller: status,
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Status",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    MultiSelectDropDown(
+                      borderColor: Colors.white,
+                      fieldBackgroundColor: bgColor,
+                      dropdownBackgroundColor: secondaryColor,
+                      optionsBackgroundColor: secondaryColor,
+                      controller: _controller,
+                      onOptionSelected: (val) {
+                        setState(() {
+                          selectedStatus =
+                              val.isNotEmpty ? val.first.value.toString() : "";
+                        });
+                        debugPrint(selectedStatus);
+                        debugPrint(val.toString());
+                      },
+                      options: options,
+                      disabledOptions: const [
+                        ValueItem(label: 'Option 1', value: '1')
+                      ],
+                      selectionType: SelectionType.single,
+                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                      optionTextStyle: const TextStyle(fontSize: 16),
+                      selectedOptionIcon: const Icon(Icons.check_circle),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
+                ),
               ),
               customformProyek(
                 title: "Nilai",

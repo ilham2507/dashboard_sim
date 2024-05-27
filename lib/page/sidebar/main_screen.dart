@@ -5,6 +5,7 @@ import 'package:drawer/page/karyawan/addKaryawan.dart';
 import 'package:drawer/page/karyawan/detailKaryawan.dart';
 import 'package:drawer/page/karyawan/detailKaryawan.dart';
 import 'package:drawer/page/karyawan/karyawan.dart';
+import 'package:drawer/page/profil/profil.dart';
 import 'package:drawer/page/proyek/addProyek.dart';
 import 'package:drawer/page/proyek/detailProyek.dart';
 import 'package:drawer/page/proyek/proyek.dart';
@@ -54,6 +55,8 @@ class MainScreen extends StatelessWidget {
       selectedPage = detailProyek(
         id: selectedItemId,
       );
+    } else if (selectedItem == 'profile') {
+      selectedPage = profil();
     }
 
     return Scaffold(

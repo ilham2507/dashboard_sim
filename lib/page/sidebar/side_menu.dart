@@ -55,7 +55,11 @@ class SideMenu extends StatelessWidget {
                 DrawerListTile(
                   title: "Profile",
                   svgSrc: "assets/icons/menu_profile.svg",
-                  press: () {},
+                  press: () {
+                    context
+                        .read<MenuAppController>()
+                        .setSelectedItem('profile');
+                  },
                 ),
                 DrawerListTile(
                   title: "Settings",

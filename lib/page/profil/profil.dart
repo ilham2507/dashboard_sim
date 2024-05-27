@@ -1,9 +1,13 @@
 import 'package:drawer/constants/constants.dart';
 import 'package:drawer/controller/MenuAppController.dart';
+import 'package:drawer/data/services/users/user_services.dart';
+import 'package:drawer/data/services/users/users_bloc.dart';
 import 'package:drawer/page/sidebar/header.dart';
 import 'package:drawer/page/sidebar/side_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class profil extends StatelessWidget {
@@ -86,7 +90,7 @@ class imageProfile extends StatelessWidget {
               ),
               color: bgColor),
           child: Image.asset(
-            "assets/photos/logo2.png",
+            "assets/photos/user.png",
             width: isSmallScreen ? 100 : 200,
             height: isSmallScreen ? 100 : 200,
             fit: BoxFit.fill,
@@ -95,13 +99,13 @@ class imageProfile extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        ElevatedButton.icon(
-          icon: const Icon(Icons.edit),
-          label: const Text("Edit"),
-          onPressed: () {
-            context.read<MenuAppController>().setSelectedItem('add karyawan');
-          },
-        ),
+        // ElevatedButton.icon(
+        //   icon: const Icon(Icons.edit),
+        //   label: const Text("Edit"),
+        //   onPressed: () {
+        //     context.read<MenuAppController>().setSelectedItem('add karyawan');
+        //   },
+        // ),
       ],
     );
   }
@@ -112,158 +116,181 @@ class detailProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 700),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Nama",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+    return BlocProvider(
+      create: (context) =>
+          UsersBloc(userService: UserService())..add(GetUserData()),
+      child: BlocBuilder<UsersBloc, UsersState>(
+        builder: (context, state) {
+          if (state is UsersLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is UserDataLoaded) {
+            final user = state.user;
+            return Container(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Nama",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.name!),
+                      ],
+                    ),
                   ),
-                ),
-                Text("Alexander Smith Oto Dinata"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "NIP",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "NIP",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.nip!),
+                      ],
+                    ),
                   ),
-                ),
-                Text("1223454636345"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Jabatan",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Jabatan",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.role!.name),
+                      ],
+                    ),
                   ),
-                ),
-                Text("Karyawan"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Email",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Email",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.email!),
+                      ],
+                    ),
                   ),
-                ),
-                Text("AlexanderSmith@gmail.com"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Username",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Username",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.username!),
+                      ],
+                    ),
                   ),
-                ),
-                Text("Alexander2230"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Jenis Kelamin",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Jenis Kelamin",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.jenisKelamin!),
+                      ],
+                    ),
                   ),
-                ),
-                Text("Laki-Laki"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Tanggal Lahir",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Tanggal Lahir",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(DateFormat('dddd MMMM yyyy')
+                            .format(user.tanggalLahir!)),
+                      ],
+                    ),
                   ),
-                ),
-                Text("20-05-1990"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "No. Telepone",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "No. Telepone",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.noTelp!),
+                      ],
+                    ),
                   ),
-                ),
-                Text("09892749852"),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Alamat",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Alamat",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user.alamat!),
+                      ],
+                    ),
                   ),
-                ),
-                Text(
-                    "Ds. Cisadea Kec. Bogor Kab. Bogor Provinsi Jawa Barat ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
-              ],
-            ),
-          ),
-        ],
+                ],
+              ),
+            );
+          } else if (state is UsersError) {
+            return Center(
+              child: Text('Failed to load user: ${state.error}'),
+            );
+          } else {
+            return const Center(
+              child: Text('Unknown state'),
+            );
+          }
+        },
       ),
     );
   }

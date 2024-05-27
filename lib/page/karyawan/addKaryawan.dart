@@ -29,17 +29,18 @@ class addKaryawan extends StatefulWidget {
 
 class _addKaryawanState extends State<addKaryawan> {
   final MultiSelectController _controller = MultiSelectController();
+  final MultiSelectController _controller1 = MultiSelectController();
 
   String selectedRoleId = '';
   DateTime? selectedDate;
   bool isLoading = false;
+  String selectedJk = '';
 
   final nama = TextEditingController();
   final username = TextEditingController();
   final nip = TextEditingController();
   final email = TextEditingController();
   final password = TextEditingController();
-  final jk = TextEditingController();
   final tgl = TextEditingController();
   final notelp = TextEditingController();
   final alamat = TextEditingController();
@@ -69,7 +70,6 @@ class _addKaryawanState extends State<addKaryawan> {
       username.text = widget.user!.username!;
       nip.text = widget.user!.nip!;
       email.text = widget.user!.email!;
-      jk.text = widget.user!.jenisKelamin!;
       notelp.text = widget.user!.noTelp!;
       alamat.text = widget.user!.alamat!;
       tgl.text = DateFormat('yyyy-MM-dd').format(widget.user!.tanggalLahir!);
@@ -88,7 +88,7 @@ class _addKaryawanState extends State<addKaryawan> {
         'email': email.text,
         'username': username.text,
         'password': password.text,
-        'jenis_kelamin': jk.text,
+        'jenis_kelamin': selectedJk,
         'tanggal_lahir': tgl.text,
         'no_telp': notelp.text,
         'alamat': alamat.text,
@@ -120,6 +120,10 @@ class _addKaryawanState extends State<addKaryawan> {
 
   @override
   Widget build(BuildContext context) {
+    final List<ValueItem> options = [
+      ValueItem(label: 'Laki-Laki', value: 'Laki-Laki'),
+      ValueItem(label: 'Perempuan', value: 'Perempuan'),
+    ];
     return Scaffold(
       drawer: SideMenu(),
       body: SafeArea(
@@ -219,7 +223,56 @@ class _addKaryawanState extends State<addKaryawan> {
                       customform(controller: email, title: "Email"),
                       customform(controller: username, title: "Username"),
                       customform(controller: password, title: "Password"),
-                      customform(controller: jk, title: "Jenis Kelamin"),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Status",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            MultiSelectDropDown(
+                              borderColor: Colors.white,
+                              fieldBackgroundColor: bgColor,
+                              dropdownBackgroundColor: secondaryColor,
+                              optionsBackgroundColor: secondaryColor,
+                              controller: _controller1,
+                              onOptionSelected: (val) {
+                                setState(() {
+                                  selectedJk = val.isNotEmpty
+                                      ? val.first.value.toString()
+                                      : "";
+                                });
+                                debugPrint(selectedJk);
+                                debugPrint(val.toString());
+                              },
+                              options: options,
+                              disabledOptions: const [
+                                ValueItem(label: 'Option 1', value: '1')
+                              ],
+                              selectionType: SelectionType.single,
+                              chipConfig:
+                                  const ChipConfig(wrapType: WrapType.wrap),
+                              optionTextStyle: const TextStyle(fontSize: 16),
+                              selectedOptionIcon:
+                                  const Icon(Icons.check_circle),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                          ],
+                        ),
+                      ),
                       customform(
                           onTap: () {
                             selectDate(context);

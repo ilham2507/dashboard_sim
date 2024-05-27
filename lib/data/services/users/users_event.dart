@@ -19,6 +19,8 @@ class GetUserById extends UsersEvent {
   GetUserById({required this.userId});
 }
 
+class GetUserData extends UsersEvent {}
+
 class UpdateUserById extends UsersEvent {
   final Map<String, dynamic> userData;
   final String? imagePath;
